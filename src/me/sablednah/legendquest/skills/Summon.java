@@ -1,15 +1,14 @@
 package me.sablednah.legendquest.skills;
 
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
-@SkillManifest(name = "Summon", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, description = "Summon Entities", 
+@SkillManifest(name = "Summon", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
+description = "Summon Entities", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 100000, 
@@ -17,16 +16,15 @@ dblvarnames = { "maxhealth"}, dblvarvalues = { 0.0D },
 intvarnames = { "qty" }, intvarvalues = { 1 }, 
 strvarnames = { "entity" }, strvarvalues = { "pig" }
 )
-public class Summon extends Skill implements Listener {
+public class Summon extends Skill {
 
 	public boolean onEnable() {
 		return true;
 	}
 
-	public void onDisable() { /* nothing to do */
-	}
+	public void onDisable() { /* nothing to do */ }
 
-	public CommandResult onCommand(Player p) { // does not require command
+	public CommandResult onCommand(Player p) { 
 		if (!validSkillUser(p)) {
 			return CommandResult.FAIL;
 		}

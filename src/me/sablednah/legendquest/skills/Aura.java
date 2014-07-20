@@ -6,9 +6,8 @@ import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
-@SkillManifest(name = "Aura", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Apply [effect] to self", 
+@SkillManifest(name = "Aura", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, description = "Apply [effect] to self", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 5000, cooldown = 100000, 
@@ -16,7 +15,7 @@ dblvarnames = {}, dblvarvalues = {},
 intvarnames = {}, intvarvalues = { }, 
 strvarnames = { "effect","message" }, strvarvalues = { "REGENERATION","Impersonating a TimeLord..." }
 )
-public class Aura extends Skill implements Listener {
+public class Aura extends Skill {
 
 	public boolean onEnable() {
 		return true;
@@ -25,7 +24,7 @@ public class Aura extends Skill implements Listener {
 	public void onDisable() { /* nothing to do */
 	}
 
-	public CommandResult onCommand(Player p) { // does not require command
+	public CommandResult onCommand(Player p) { 
 		if (!validSkillUser(p)) {
 			return CommandResult.FAIL;
 		}

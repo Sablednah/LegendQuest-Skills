@@ -8,9 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
-@SkillManifest(name = "Enchant", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Apply [effect] to area...", 
+@SkillManifest(name = "Enchant", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
+description = "Apply [effect] to area...", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
@@ -18,7 +18,7 @@ dblvarnames = {}, dblvarvalues = {},
 intvarnames = {"radius"}, intvarvalues = { 3 }, 
 strvarnames = { "effect","message" }, strvarvalues = { "CONFUSION","Nauseous..." }
 )
-public class Enchant extends Skill implements Listener {
+public class Enchant extends Skill {
 
 	public boolean onEnable() {
 		return true;
@@ -27,7 +27,7 @@ public class Enchant extends Skill implements Listener {
 	public void onDisable() { /* nothing to do */
 	}
 
-	public CommandResult onCommand(Player p) { // does not require command
+	public CommandResult onCommand(Player p) { 
 		if (!validSkillUser(p)) {
 			return CommandResult.FAIL;
 		}
@@ -37,16 +37,16 @@ public class Enchant extends Skill implements Listener {
 		String eff = ((String) data.vars.get("effect"));
 		Integer radius = ((Integer) data.vars.get("radius"));
 		
-			@SuppressWarnings("deprecation")
-			Block block = p.getTargetBlock(null, 100);
-			Location bl = block.getRelative(BlockFace.UP).getLocation();
-			
-			Effects ef = Effects.valueOf(eff.toUpperCase());
-			
-			EffectProcess ep =  new EffectProcess(ef, data.duration, OwnerType.LOCATATION, bl, radius);
-			lq.effectManager.addPendingProcess(ep);
-			String msg = ((String) data.vars.get("message"));
-			p.sendMessage(msg);
+		@SuppressWarnings("deprecation")
+		Block block = p.getTargetBlock(null, 100);
+		Location bl = block.getRelative(BlockFace.UP).getLocation();
+		
+		Effects ef = Effects.valueOf(eff.toUpperCase());
+		
+		EffectProcess ep =  new EffectProcess(ef, data.duration, OwnerType.LOCATATION, bl, radius);
+		lq.effectManager.addPendingProcess(ep);
+		String msg = ((String) data.vars.get("message"));
+		p.sendMessage(msg);
 
 		return CommandResult.SUCCESS;
 	}

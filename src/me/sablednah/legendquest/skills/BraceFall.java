@@ -23,7 +23,7 @@ public class BraceFall extends Skill implements Listener {
 	public void onDisable() { /* nothing to do */
 	}
 
-	public CommandResult onCommand(Player p) { // does not require command
+	public CommandResult onCommand(Player p) {
 		return CommandResult.NOTAVAILABLE;
 	}
 

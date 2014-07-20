@@ -5,6 +5,7 @@ import java.util.List;
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
+import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,7 +25,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-@SkillManifest(name = "Archer", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Fire a Powerful arrow", levelRequired = 0, skillPoints = 0, consumes = "", manaCost = 10, buildup = 0, delay = 0, duration = 5000, cooldown = 10000, dblvarnames = {
+@SkillManifest(name = "Archer", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, description = "Fire a Powerful arrow", levelRequired = 0, skillPoints = 0, consumes = "", manaCost = 10, buildup = 0, delay = 0, duration = 5000, cooldown = 10000, dblvarnames = {
 		"damage", "velocity" }, dblvarvalues = { 5.0, 1.2 }, intvarnames = { "knockback", "fire", "qty", "bowshot", "explode", "teleport" }, intvarvalues = { 1, 1, 1, 0, 0, 0 }, strvarnames = { "effects", "material" }, strvarvalues = { "POISON,BLEED",
 		"COBWEB" })
 public class Archer extends Skill implements Listener {
@@ -32,8 +33,7 @@ public class Archer extends Skill implements Listener {
 		return true;
 	}
 
-	public void onDisable() { /* nothing to do */
-	}
+	public void onDisable() { /* nothing to do */ }
 
 	public CommandResult onCommand(Player p) {
 		// Check if Player has the Archer Skill and that its unlocked
@@ -168,7 +168,17 @@ public class Archer extends Skill implements Listener {
 					Material mat = Material.matchMaterial(m);
 					if (mat != null) {
 						Block b = getNear(hitBlock);
-						b.setType(mat);
+						if (b != null) {
+							Player pl = null;
+							ProjectileSource
+							p = ((Arrow) entity).getShooter();
+							if (p instanceof Player) {
+								pl = (Player) p;
+							}
+							if (PluginUtils.canBuild(b, pl)) {
+								b.setType(mat);
+							}
+						}
 					}
 				}
 				Integer tele = getMetaInteger(entity, "teleport");
