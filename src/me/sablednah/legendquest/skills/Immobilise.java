@@ -67,7 +67,7 @@ public class Immobilise extends Skill {
 		public void run() {
 			PC pc = getPC(uuid);
 			if (pc!=null) {
-				lq.getServer().getPlayer(uuid).setWalkSpeed(pc.race.baseSpeed);
+				lq.getServer().getPlayer(uuid).setWalkSpeed(pc.getSpeed());
 			}
 		}
 	}
