@@ -9,8 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-@SkillManifest(name = "Enchant", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
-description = "Apply [effect] to area...", 
+@SkillManifest(name = "Enchant", type = SkillType.ACTIVE, author = "SableDnah", version = 1.2D, 
+description = "Apply [effect] to area of [radius] block radius.", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 

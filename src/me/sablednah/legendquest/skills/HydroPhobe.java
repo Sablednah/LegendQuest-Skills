@@ -8,8 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-@SkillManifest(name = "HydroPhobe", type = SkillType.PASSIVE, author = "SableDnah", version = 1.0D, description = "Bonus stats at night, damage/penalty in light", consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 0, dblvarnames = {
-		"raindamage", "damage" }, dblvarvalues = { 1.0, 1.0 }, intvarnames = { "raindamageinterval", "damageinterval", "waterstatmod", "rainstatmod" }, intvarvalues = { 5, 5, 1, 1 }, strvarnames = {}, strvarvalues = {})
+@SkillManifest(name = "HydroPhobe", type = SkillType.PASSIVE, author = "SableDnah", version = 1.0D, 
+description = "Bonus stats at night, damage/penalty in light", 
+consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
+buildup = 0, delay = 0, duration = 0, cooldown = 0, 
+dblvarnames = {	"raindamage", "damage" }, dblvarvalues = { 1.0, 1.0 }, 
+intvarnames = { "raindamageinterval", "damageinterval", "waterstatmod", "rainstatmod" }, intvarvalues = { 5, 5, 1, 1 }, 
+strvarnames = {}, strvarvalues = {})
 public class HydroPhobe extends Skill implements Listener {
 	public boolean onEnable() {
 		return true;

@@ -16,8 +16,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-@SkillManifest(name = "HealingTouch", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Heal touched target...", consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = {
-		"heal", "chance" }, dblvarvalues = { 10.0, 100.0 }, intvarnames = { "effectsduration" }, intvarvalues = { 10000 }, strvarnames = { "removeeffects", "holding", "effects" }, strvarvalues = { "SLOWBLEED,BLEED,POISON", "MAGMA_CREAM", "REGENERATE" })
+@SkillManifest(name = "HealingTouch", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
+description = "Heal touched target by [heal] health.", 
+consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
+buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
+dblvarnames = { "heal", "chance" }, dblvarvalues = { 10.0, 100.0 }, 
+intvarnames = { "effectsduration" }, intvarvalues = { 10000 }, 
+strvarnames = { "removeeffects", "holding", "effects" }, strvarvalues = { "SLOWBLEED,BLEED,POISON", "MAGMA_CREAM", "REGENERATE" }
+)
+
 public class HealingTouch extends Skill implements Listener {
 
 	public boolean onEnable() {

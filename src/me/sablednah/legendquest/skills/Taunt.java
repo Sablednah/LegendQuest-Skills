@@ -9,7 +9,7 @@ import org.bukkit.entity.Wolf;
 @SkillManifest(
 		name = "Taunt", type = SkillType.ACTIVE, 
 		author = "SableDnah", version = 1.0D, 
-		description = "Taunt nearby monsters...", 
+		description = "Taunt nearby monsters (Range [distance])", 
 		consumes = "", manaCost = 5, 
 		levelRequired = 0, skillPoints = 5, 
 		buildup = 0, delay = 0, duration = 0, cooldown = 60000, 

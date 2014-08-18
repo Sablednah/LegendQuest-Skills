@@ -8,11 +8,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @SkillManifest(
-	name = "Boost", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
-	description = "Adjust your speed for [duration]", 
+	name = "Boost", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
+	description = "Adjust your speed for [duration]s", 
 	consumes = "", manaCost = 5, levelRequired = 0, skillPoints = 0, 
 	buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
-	dblvarnames = { "speed" }, dblvarvalues = { 0.0 }, 
+	dblvarnames = { "speed" }, dblvarvalues = { 0.4 }, 
 	intvarnames = {	}, intvarvalues = { }, 
 	strvarnames = { }, strvarvalues = { }
 )

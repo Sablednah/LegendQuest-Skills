@@ -10,7 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-@SkillManifest(name = "PassiveAura", type = SkillType.PASSIVE, author = "SableDnah", version = 1.0D, description = "Apply constant [effect] to self", 
+@SkillManifest(name = "PassiveAura", type = SkillType.PASSIVE, author = "SableDnah", version = 1.1D, 
+description = "Apply constant [effect] to self", 
 consumes = "", manaCost = 0, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 0, 

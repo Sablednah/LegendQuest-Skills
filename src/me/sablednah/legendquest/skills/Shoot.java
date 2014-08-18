@@ -15,7 +15,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 
-@SkillManifest(name = "Shoot", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Fire a [projectile]", consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = { "damage" }, dblvarvalues = { 5.0 }, intvarnames = {
+@SkillManifest(name = "Shoot", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
+description = "Fire a [projectile]", consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = { "damage" }, dblvarvalues = { 5.0 }, intvarnames = {
 		"power", "fire" }, intvarvalues = { 1, 1 }, strvarnames = { "projectile" }, strvarvalues = { "FIREBALL" })
 public class Shoot extends Skill implements Listener {
 

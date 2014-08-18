@@ -17,7 +17,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-@SkillManifest(name = "PickPocket", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Steal an item from another player", consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 5, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = { "chance" }, dblvarvalues = { 50.0 }, intvarnames = {
+@SkillManifest(name = "PickPocket", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
+description = "Steal an item from another player", 
+consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 5, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = { "chance" }, dblvarvalues = { 50.0 }, intvarnames = {
 		"qty", "distance", "marked" }, intvarvalues = { 1, 10, 1 }, strvarnames = { "holding", "blacklist" }, strvarvalues = { "ANY", "EMERALD" })
 public class PickPocket extends Skill implements Listener {
 

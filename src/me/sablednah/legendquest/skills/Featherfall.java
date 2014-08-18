@@ -6,12 +6,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-@SkillManifest(name = "FeatherFall", type = SkillType.PASSIVE, author = "SableDnah", version = 1.0D, 
-description = "Prevent Fall Damage", 
+@SkillManifest(name = "FeatherFall", type = SkillType.PASSIVE, author = "SableDnah", version = 1.1D, 
+description = "[chance] chance to prevent [percentage]+[soak] fall damage.", 
 consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 0, 
 dblvarnames = { "chance","percentage" }, dblvarvalues = { 50.0, 99.0 }, 
-intvarnames = { "soak" }, intvarvalues = { 1, 5 }, 
+intvarnames = { "soak" }, intvarvalues = { 1 }, 
 strvarnames = { }, strvarvalues = { }
 )
 public class Featherfall extends Skill implements Listener {
@@ -43,7 +43,7 @@ public class Featherfall extends Skill implements Listener {
 			double chance = ((Double) data.vars.get("chance")) / 100.0D;
 			if (Math.random() <= chance) {
 
-				double percent = ((Double) data.vars.get("percent")) / 100.0D;
+				double percent = ((Double) data.vars.get("percentage")) / 100.0D;
 				double soak = (Integer) data.vars.get("soak");
 				
 				double dmg = event.getDamage();
@@ -54,7 +54,7 @@ public class Featherfall extends Skill implements Listener {
 					event.setCancelled(true);
 					dmg=0;
 				}
-				event.setDamage(0);				
+				event.setDamage(dmg);				
 			}
 		}
 	}

@@ -6,8 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-@SkillManifest(name = "BraceFall", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
-description = "Prevent Fall Damage When Active", 
+@SkillManifest(name = "BraceFall", type = SkillType.ACTIVE, author = "SableDnah", version = 1.2D, 
+description = "[chance] chance to prevent [percentage]+[soak] fall damage. Active for [duration]s", 
 consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 10000, cooldown = 5000, 
 dblvarnames = { "chance","percentage" }, dblvarvalues = { 50.0, 99.0 }, 
@@ -43,7 +43,7 @@ public class BraceFall extends Skill implements Listener {
 			double chance = ((Double) data.vars.get("chance")) / 100.0D;
 			if (Math.random() <= chance) {
 
-				double percent = ((Double) data.vars.get("percent")) / 100.0D;
+				double percent = ((Double) data.vars.get("percentage")) / 100.0D;
 				double soak = (Integer) data.vars.get("soak");
 				
 				double dmg = event.getDamage();

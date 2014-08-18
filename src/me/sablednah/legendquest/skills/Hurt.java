@@ -9,16 +9,18 @@ import me.sablednah.legendquest.utils.plugins.PluginUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-@SkillManifest(name = "Hurt", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
-description = "Inflict Damage on target...", 
+@SkillManifest(name = "Hurt", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
+description = "Inflict [damage] Damage on target...", 
 consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
 dblvarnames = { "explodepower", "damage" }, dblvarvalues = { 4.0,5.0 }, 
-intvarnames = {	"distance", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "teleport", "effectsduration" }, intvarvalues = { 10, 1, 0, 1, 1, 1, 600000 }, 
+intvarnames = {	"distance", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "teleport", "effectsduration", "radius" }, intvarvalues = { 10, 1, 0, 1, 1, 1, 600000, 0 }, 
 strvarnames = { "effects", "material" }, strvarvalues = { "SLOWBLEED", "WEB" }
 )
 public class Hurt extends Skill implements Listener {
@@ -38,6 +40,7 @@ public class Hurt extends Skill implements Listener {
 		SkillDataStore data = this.getPlayerSkillData(p);
 
 		Integer distance = ((Integer) data.vars.get("distance"));
+		Integer r = ((Integer) data.vars.get("radius"));
 		Integer effectsduration = ((Integer) data.vars.get("effectsduration"));
 		Double damage = ((Double) data.vars.get("damage"));
 		Integer explode = ((Integer) data.vars.get("explode"));
@@ -69,6 +72,14 @@ public class Hurt extends Skill implements Listener {
 		}
 		
 		target.damage(damage, p);
+		
+		if (r>0) {
+			for (Entity e: target.getNearbyEntities(r,r,r)) {
+				if (e instanceof Damageable) {
+					((Damageable) e).damage(damage, p);
+				}
+			}
+		}
 		
 		if (explode > 0) {
 			target.getWorld().createExplosion(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ(), explodepower.floatValue(), (explodefire>0), (explodeblocks>0));

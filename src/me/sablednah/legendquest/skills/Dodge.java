@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @SkillManifest(name = "Dodge", type = SkillType.TRIGGERED, author = "SableDnah", version = 1.0D, 
-description = "Increased dodge and damage prevention", 
+description = "Increased dodge ([+dodgemod]) and +[soak] damage prevention for [soakchance]% of damage.", 
 consumes = "", manaCost = 0, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 0, 

@@ -7,7 +7,8 @@ import me.sablednah.legendquest.effects.OwnerType;
 
 import org.bukkit.entity.Player;
 
-@SkillManifest(name = "Aura", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, description = "Apply [effect] to self", 
+@SkillManifest(name = "Aura", type = SkillType.ACTIVE, author = "SableDnah", version = 1.2D, 
+description = "Apply [effect] to self for [duration]s", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 5000, cooldown = 100000, 

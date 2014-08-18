@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 @SkillManifest(name = "Stun", type = SkillType.TRIGGERED, author = "SableDnah", version = 1.0D, 
-description = "Attacks have [chance] percent of stunning target.", 
+description = "Attacks have [chance] percent of stunning target for [duration]s.", 
 consumes = "", manaCost = 0, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 5000, cooldown = 0, 

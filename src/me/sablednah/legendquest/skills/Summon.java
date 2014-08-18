@@ -7,8 +7,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-@SkillManifest(name = "Summon", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
-description = "Summon Entities", 
+@SkillManifest(name = "Summon", type = SkillType.ACTIVE, author = "SableDnah", version = 2.1D, 
+description = "Summon [qty]x[entity]", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 100000, 

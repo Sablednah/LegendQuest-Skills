@@ -3,6 +3,7 @@ package me.sablednah.legendquest.skills;
 import me.sablednah.legendquest.events.AbilityCheckEvent;
 import me.sablednah.legendquest.events.SkillTick;
 
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -51,7 +52,8 @@ public class LightAffinity extends Skill implements Listener {
 		Block b = p.getLocation().getBlock();		
 		int light = 0;
 		if (sun>0) {
-			light = b.getLightFromSky();
+			//light = b.getLightFromSky();
+			light = getSunLightForBlock(b);
 		} else {
 			light = b.getLightLevel();			
 		}
@@ -95,7 +97,8 @@ public class LightAffinity extends Skill implements Listener {
 		Block b = p.getLocation().getBlock();		
 		int light = 0;
 		if (sun>0) {
-			light = b.getLightFromSky();
+			//light = b.getLightFromSky();
+			light = getSunLightForBlock(b);
 		} else {
 			light = b.getLightLevel();			
 		}
@@ -129,4 +132,37 @@ public class LightAffinity extends Skill implements Listener {
 			event.removePenalty(nightpenalty);			
 		}
 	}
+	 /**
+	    * Gets the simulated light level from a world
+	    * @param world
+	    *            The world to check for time and storms
+	    * @return
+	    *            The light level.
+	    */
+	    public int getLightForWorld(World world) {
+	        int light = 15;
+	        long time = world.getTime();
+	        //Time
+	        if(time >= 12000) {
+	            int timeLight = (int) ((time - 12000) / 135);
+	            if(timeLight > 10) {
+	                timeLight = 10;
+	            }
+	            light = 15 - timeLight;
+	        }
+	        //Storm conditions
+	        if(world.hasStorm() && light >= 8) {
+	            light -= 3;
+	        }
+	        return light;
+	    }
+	    public int getSunLightForBlock(Block b) {
+	    	int baselight = getLightForWorld(b.getWorld());
+	    	int lightfromsky = b.getLightFromSky();
+	    	int shade = 15-lightfromsky;
+	    	int light = baselight - shade;
+	    	if (light<0) { light = 0; }
+	    	return light;
+	    }
+
 }

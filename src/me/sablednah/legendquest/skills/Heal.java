@@ -8,8 +8,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 @SkillManifest(
-	name = "Heal", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
-	description = "Heal target...", 
+	name = "Heal", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
+	description = "Heal target for [heal] health, upto [distance] away.", 
 	consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
 	buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
 	dblvarnames = { "heal" }, dblvarvalues = { 10.0 }, 

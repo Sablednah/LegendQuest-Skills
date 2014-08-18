@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @SkillManifest(name = "Fence", type = SkillType.ACTIVE, 
 author = "SableDnah", version = 1.1D, 
-description = "Fence stolen goods (remove STOLEN! marker)", 
+description = "Fence stolen goods (remove STOLEN! marker) [chance]% of time.", 
 consumes = "", manaCost = 10, 
 levelRequired = 0, skillPoints = 5, 
 buildup = 0, delay = 0, duration = 0, cooldown = 60000, 
