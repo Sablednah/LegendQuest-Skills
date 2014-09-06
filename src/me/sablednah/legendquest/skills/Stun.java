@@ -17,7 +17,7 @@ levelRequired = 0, skillPoints = 0,
 buildup = 0, delay = 0, duration = 5000, cooldown = 0, 
 dblvarnames = { "chance" }, dblvarvalues = { 50.0 }, 
 intvarnames = {}, intvarvalues = {}, 
-strvarnames = {}, strvarvalues = {}
+strvarnames = { "message" }, strvarvalues = { "Target Stunned..." }
 )
 public class Stun extends Skill implements Listener {
 
@@ -42,9 +42,11 @@ public class Stun extends Skill implements Listener {
 			}
 
 			// load skill options
-			SkillDataStore data = this.getPlayerSkillData(p);			
+			SkillDataStore data = this.getPlayerSkillData(p);
 			
+			String message = (String) data.vars.get("message");			
 			double chance = ((Double) data.vars.get("chance")) / 100.0D;
+
 			if (Math.random() <= chance) {
 				EffectProcess ep = null;
 				if ((event.getEntity() instanceof Player)) {
@@ -54,7 +56,7 @@ public class Stun extends Skill implements Listener {
 					ep = new EffectProcess(Effects.STUNNED,  data.duration, OwnerType.MOB, event.getEntity().getUniqueId());
 				}
 				lq.effectManager.addPendingProcess(ep);
-				p.sendMessage("Target Stunned...");
+				p.sendMessage(message);
 			}
 		}
 	}

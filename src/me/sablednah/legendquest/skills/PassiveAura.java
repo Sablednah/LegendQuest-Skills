@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 description = "Apply constant [effect] to self", 
 consumes = "", manaCost = 0, 
 levelRequired = 0, skillPoints = 0, 
-buildup = 0, delay = 0, duration = 0, cooldown = 0, 
+buildup = 0, delay = 0, duration = 5000, cooldown = 0, 
 dblvarnames = {}, dblvarvalues = {}, 
 intvarnames = {}, intvarvalues = { }, 
 strvarnames = { "effect" }, strvarvalues = { "REGENERATION" }
@@ -43,7 +43,8 @@ public class PassiveAura extends Skill implements Listener {
 		SkillDataStore data = this.getPlayerSkillData(p);
 		String eff = ((String) data.vars.get("effect"));
 
-		long duration = (lq.configMain.skillTickInterval * 50)+50; // convert ticks to duration
+//		long duration = (lq.configMain.skillTickInterval * 50)+50; // convert ticks to duration
+		long duration = data.duration;
 		if (duration<2000) { duration = 2000; }
 
 		try {

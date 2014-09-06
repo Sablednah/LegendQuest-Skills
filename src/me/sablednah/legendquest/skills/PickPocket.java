@@ -19,8 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @SkillManifest(name = "PickPocket", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
 description = "Steal an item from another player", 
-consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 5, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = { "chance" }, dblvarvalues = { 50.0 }, intvarnames = {
-		"qty", "distance", "marked" }, intvarvalues = { 1, 10, 1 }, strvarnames = { "holding", "blacklist" }, strvarvalues = { "ANY", "EMERALD" })
+consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 5, buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
+dblvarnames = { "chance" }, dblvarvalues = { 50.0 }, 
+intvarnames = {	"qty", "distance", "marked" }, intvarvalues = { 1, 10, 1 }, 
+strvarnames = { "holding", "blacklist" }, strvarvalues = { "ANY", "EMERALD" }
+)
 public class PickPocket extends Skill implements Listener {
 
 	public boolean onEnable() {
@@ -84,7 +87,7 @@ public class PickPocket extends Skill implements Listener {
 		// Get target
 		Player target = Utils.getTargetPlayer(p, distance);
 		if (target == null) {
-			p.sendMessage("Sorry, you need to hold look at a player to pick their pocket...");
+			p.sendMessage("Sorry, you need to look at a player to pick their pocket...");
 			return CommandResult.FAIL;
 		}
 

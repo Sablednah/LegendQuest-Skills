@@ -26,7 +26,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 @SkillManifest(
-	name = "Archer", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
+	name = "Archer", type = SkillType.ACTIVE, author = "SableDnah", version = 2.1D, 
 	description = "Fire a Powerful Arrow", 
 	levelRequired = 0, skillPoints = 0, consumes = "", manaCost = 10, 
 	buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
@@ -180,9 +180,9 @@ public class Archer extends Skill implements Listener {
 							p = ((Arrow) entity).getShooter();
 							if (p instanceof Player) {
 								pl = (Player) p;
-							}
-							if (PluginUtils.canBuild(b, pl)) {
-								b.setType(mat);
+								if (PluginUtils.canBuild(b, pl)) {
+									b.setType(mat);
+								}
 							}
 						}
 					}

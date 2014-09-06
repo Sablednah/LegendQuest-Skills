@@ -4,10 +4,15 @@ import java.util.List;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.Snowball;
+import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -15,9 +20,14 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 
-@SkillManifest(name = "Shoot", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
-description = "Fire a [projectile]", consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = { "damage" }, dblvarvalues = { 5.0 }, intvarnames = {
-		"power", "fire" }, intvarvalues = { 1, 1 }, strvarnames = { "projectile" }, strvarvalues = { "FIREBALL" })
+@SkillManifest(name = "Shoot", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
+description = "Fire a [projectile]", 
+consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
+buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
+dblvarnames = { "damage" }, dblvarvalues = { 5.0 }, 
+intvarnames = { "power", "fire" }, intvarvalues = { 1, 1 }, 
+strvarnames = { "projectile" }, strvarvalues = { "FIREBALL" }
+)
 public class Shoot extends Skill implements Listener {
 
 	public boolean onEnable() {
@@ -42,34 +52,42 @@ public class Shoot extends Skill implements Listener {
 		Integer power = ((Integer) data.vars.get("power"));
 		Integer fire = ((Integer) data.vars.get("fire"));
 		Double damage = ((Double) data.vars.get("damage"));
-		
+
 		Projectile ammo;
 		if (projectile.equalsIgnoreCase("fireball")) {
 			ammo = p.launchProjectile(Fireball.class);
-			((Fireball) ammo).setYield(power);
-			if (fire > 0) {
-				((Fireball) ammo).setIsIncendiary(true);
-			} else {
-				((Fireball) ammo).setIsIncendiary(false);
-			}
+		} else if (projectile.equalsIgnoreCase("smallfireball")) {
+			ammo = p.launchProjectile(SmallFireball.class);
+		} else if (projectile.equalsIgnoreCase("largefireball")) {
+			ammo = p.launchProjectile(LargeFireball.class);
 		} else if (projectile.equalsIgnoreCase("snowball")) {
 			ammo = p.launchProjectile(Snowball.class);
-			if (fire > 0) {
-				ammo.setFireTicks(1200);
-			}
 		} else if (projectile.equalsIgnoreCase("egg")) {
 			ammo = p.launchProjectile(Egg.class);
-			if (fire > 0) {
-				ammo.setFireTicks(1200);
-			}
+		} else if (projectile.equalsIgnoreCase("witherskull")) {
+			ammo = p.launchProjectile(WitherSkull.class);			
+		} else if (projectile.equalsIgnoreCase("enderpearl")) {
+			ammo = p.launchProjectile(EnderPearl.class);			
 		} else { // if (projectile.equalsIgnoreCase("arrow")) {
 			ammo = p.launchProjectile(Arrow.class);
 			((Arrow) ammo).setKnockbackStrength(power);
-			if (fire > 0) {
-				ammo.setFireTicks(1200);
-			}
 		}
 
+		if (ammo instanceof Explosive) {
+			((Explosive) ammo).setYield(power);
+			if (fire > 0) {
+				((Explosive) ammo).setIsIncendiary(true);
+			} else {
+				((Explosive) ammo).setIsIncendiary(false);
+			}
+		} else {
+			if (fire > 0) {
+				ammo.setFireTicks(1200);
+			} else {
+				ammo.setFireTicks(0);
+			}
+		}
+		
 		ammo.setMetadata("damage", new FixedMetadataValue(lq, damage));
 		ammo.setMetadata("skillname", new FixedMetadataValue(lq, getName()));
 
@@ -81,7 +99,7 @@ public class Shoot extends Skill implements Listener {
 		if (event.getDamager() instanceof Projectile) {
 			Double dmg = getMetaDamage(event.getDamager());
 			String name = getMetaSkillname(event.getDamager());
-			if (name.equalsIgnoreCase(getName())){
+			if (name.equalsIgnoreCase(getName())) {
 				double damage = event.getDamage();
 				event.setDamage(damage + dmg);
 			}

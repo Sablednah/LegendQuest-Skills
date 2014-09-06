@@ -11,7 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @SkillManifest(name = "LightAffinity", type = SkillType.PASSIVE, author = "SableDnah", version = 1.0D, 
-description = "Bonus stats at daytime, damage/penalty in dark", consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
+description = "Bonus stats at daytime, damage/penalty in dark", 
+consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 0, 
 dblvarnames = { "regenerate", "damage" }, dblvarvalues = { 1.0,1.0 }, 
 intvarnames = { "minlight", "maxlight", "regeninterval","damageinterval","daybonus","nightpenalty","darkpenalty","lightbonus", "sunonly" }, 
@@ -66,15 +67,19 @@ public class LightAffinity extends Skill implements Listener {
 		double regenerate = ((Double) data.vars.get("regenerate"));
 		double damage = ((Double) data.vars.get("damage"));
 
+		if (damage>0.0D) {
 		if (light<minlight) { // dark
 			if ((lq.players.ticks % ((regeninterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
 				getPC(p).damage(damage);
 			}
 		}
+		}
+		if (regenerate>0.0D) {
 		if (light>maxlight) {
 			if ((lq.players.ticks % ((damageinterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
 				getPC(p).heal(regenerate);
 			}
+		}
 		}
 	}
 	

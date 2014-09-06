@@ -14,7 +14,7 @@ levelRequired = 0, skillPoints = 0,
 buildup = 0, delay = 0, duration = 0, cooldown = 0, 
 dblvarnames = { "soakchance" }, dblvarvalues = { 50.0 }, 
 intvarnames = { "soak", "dodgemod" }, intvarvalues = { 5, 5 }, 
-strvarnames = { "" }, strvarvalues = { "" })
+strvarnames = { "message" }, strvarvalues = { "Dodged!!" })
 public class Dodge extends Skill implements Listener {
 
 	public boolean onEnable() {
@@ -39,12 +39,13 @@ public class Dodge extends Skill implements Listener {
 			// load skill options
 			SkillDataStore data = this.getPlayerSkillData(p);
 
+			String message = (String) data.vars.get("message");
 			double chance = ((Double) data.vars.get("soakchance")) / 100.0D;
 			if (Math.random() <= chance) {
-			if (event.getDamager() instanceof LivingEntity) {
-				event.setDodge(event.getDodge() + ((Integer) data.vars.get("soak")));
-				p.sendMessage("Dodge!");
-			}
+				if (event.getDamager() instanceof LivingEntity) {
+					event.setDodge(event.getDodge() + ((Integer) data.vars.get("soak")));
+					if (!message.isEmpty()){p.sendMessage(message);}
+				}
 			}
 		}
 	}
@@ -59,11 +60,10 @@ public class Dodge extends Skill implements Listener {
 
 			// load skill options
 			SkillDataStore data = this.getPlayerSkillData(p);
+			String message = (String) data.vars.get("message");
 
 			event.setDodgeChance(event.getDodgeChance() + ((Integer) data.vars.get("dodgemod")));
-
-			p.sendMessage("Dodge!");
-
+			if (!message.isEmpty()){p.sendMessage(message);}
 		}
 	}
 }

@@ -23,9 +23,23 @@ public class WaterBreathing extends Skill implements Listener {
 	public void onDisable() { /* nothing to do */
 	}
 
-	public CommandResult onCommand(Player p) { // does not require command
-		return CommandResult.NOTAVAILABLE;
+	public CommandResult onCommand(Player p) {
+		if (!validSkillUser(p)) {
+			return CommandResult.FAIL;
+		}
+
+		// load skill options
+		SkillDataStore data = this.getPlayerSkillData(p);
+		if (data.type==SkillType.PASSIVE) { // does not require command
+			return CommandResult.NOTAVAILABLE;
+		}
+		
+		String message = ((String) data.vars.get("message"));
+		p.sendMessage(message);
+
+		return CommandResult.SUCCESS;
 	}
+
 	
 	@EventHandler	
 	public void skillTick(SkillTick event) {
@@ -35,10 +49,14 @@ public class WaterBreathing extends Skill implements Listener {
 		}
 		// load skill options
 		SkillDataStore data = this.getPlayerSkillData(p);
-		Integer rate = ((Integer) data.vars.get("rate"));
-		
-		int max = p.getMaximumAir();
-		int remain = p.getRemainingAir();
-		p.setRemainingAir(Math.min(remain+rate, max));
+		SkillPhase phase = data.checkPhase();
+
+		if (phase.equals(SkillPhase.ACTIVE) || data.type.equals(SkillType.PASSIVE)) {
+			Integer rate = ((Integer) data.vars.get("rate"));
+			
+			int max = p.getMaximumAir();
+			int remain = p.getRemainingAir();
+			p.setRemainingAir(Math.min(remain+rate, max));
+		}
 	}
 }

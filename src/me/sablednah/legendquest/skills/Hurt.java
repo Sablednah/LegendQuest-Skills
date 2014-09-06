@@ -3,14 +3,15 @@ package me.sablednah.legendquest.skills;
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
+import me.sablednah.legendquest.playercharacters.PC;
 import me.sablednah.legendquest.utils.Utils;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -19,8 +20,9 @@ import org.bukkit.event.Listener;
 description = "Inflict [damage] Damage on target...", 
 consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
-dblvarnames = { "explodepower", "damage" }, dblvarvalues = { 4.0,5.0 }, 
-intvarnames = {	"distance", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "teleport", "effectsduration", "radius" }, intvarvalues = { 10, 1, 0, 1, 1, 1, 600000, 0 }, 
+dblvarnames = { "explodepower", "damage", "heal" }, dblvarvalues = { 4.0, 5.0 , 5.0}, 
+intvarnames = {	"distance", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "teleport", "effectsduration", "radius", "lightning", "undeadonly"}, 
+intvarvalues = { 10, 1, 0, 1, 1, 1, 600000, 0, 0, 0 }, 
 strvarnames = { "effects", "material" }, strvarvalues = { "SLOWBLEED", "WEB" }
 )
 public class Hurt extends Skill implements Listener {
@@ -49,14 +51,17 @@ public class Hurt extends Skill implements Listener {
 		Integer explodefire = ((Integer) data.vars.get("explodefire"));
 		Integer bypassmagicarmour = ((Integer) data.vars.get("bypassmagicarmour"));
 		Integer teleport = ((Integer) data.vars.get("teleport"));
+		Integer lightning = ((Integer) data.vars.get("lightning"));
+		Integer undeadonly = ((Integer) data.vars.get("undeadonly"));
 		String effects = ((String) data.vars.get("effects"));
 		String m = ((String) data.vars.get("material"));
+		Double heal = ((Double) data.vars.get("heal"));
 
 		
 		// Get target
 		LivingEntity target = Utils.getTarget(p, distance);
 		if (target == null) {
-			p.sendMessage("Sorry, you need to hold look at a target...");
+			p.sendMessage("Sorry, you need to look at a target...");
 			return CommandResult.FAIL;
 		}
 
@@ -66,18 +71,21 @@ public class Hurt extends Skill implements Listener {
 		}
 
 		// ok so you have looked at a valid target
-		
 		if (bypassmagicarmour>0) {
 			//get magic armour value andd add to damage to negate.
 		}
 		
-		target.damage(damage, p);
-		
 		if (r>0) {
 			for (Entity e: target.getNearbyEntities(r,r,r)) {
-				if (e instanceof Damageable) {
-					((Damageable) e).damage(damage, p);
+				if (e instanceof LivingEntity) {
+					if (undeadonly == 0 || (undeadonly >0 && (target.getType() == EntityType.ZOMBIE || target.getType() == EntityType.PIG_ZOMBIE || target.getType() == EntityType.GIANT || target.getType() == EntityType.SKELETON ) ) ) {
+						doStuff((LivingEntity) e, damage, p, lightning, m, effects, effectsduration, heal);
+					}
 				}
+			}
+		} else {
+			if (undeadonly == 0 || (undeadonly >0 && (target.getType() == EntityType.ZOMBIE || target.getType() == EntityType.PIG_ZOMBIE || target.getType() == EntityType.GIANT || target.getType() == EntityType.SKELETON ) ) ) {
+				doStuff(target, damage, p, lightning, m, effects, effectsduration, heal);				
 			}
 		}
 		
@@ -85,9 +93,21 @@ public class Hurt extends Skill implements Listener {
 			target.getWorld().createExplosion(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ(), explodepower.floatValue(), (explodefire>0), (explodeblocks>0));
 		}
 
-		if (effects != null && !effects.isEmpty()) {
-			int duration = effectsduration;
+		if (teleport != null && teleport >0) {
+				p.teleport(target.getLocation());
+		}
 
+		
+//		boolean test = Mechanics.opposedTest(getPC(p), Difficulty.TOUGH, Attribute.DEX, getPC(target), Difficulty.EASY, Attribute.WIS);
+
+		return CommandResult.SUCCESS;
+	}
+	public void doStuff(LivingEntity target, double damage, Player p, int lightning, String m, String effects, int duration, double heal) {
+		target.damage(damage, p);
+		PC pc =  getPC(p);
+		pc.heal(heal, target);
+		if (lightning>0) { target.getWorld().strikeLightningEffect(target.getLocation()); }
+		if (effects != null && !effects.isEmpty()) {
 			String[] list = effects.split("\\s*,\\s*");
 			for (String s : list) {
 				Effects ef = Effects.valueOf(s.toUpperCase());
@@ -119,13 +139,6 @@ public class Hurt extends Skill implements Listener {
 				}
 			}
 		}
-		if (teleport != null && teleport >0) {
-				p.teleport(target.getLocation());
-		}
-
 		
-//		boolean test = Mechanics.opposedTest(getPC(p), Difficulty.TOUGH, Attribute.DEX, getPC(target), Difficulty.EASY, Attribute.WIS);
-
-		return CommandResult.SUCCESS;
 	}
 }
