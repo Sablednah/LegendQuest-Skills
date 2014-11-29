@@ -2,6 +2,7 @@ package me.sablednah.legendquest.skills;
 
 import java.util.List;
 
+
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
@@ -12,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +24,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.Location;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -31,7 +34,7 @@ import org.bukkit.util.Vector;
 	levelRequired = 0, skillPoints = 0, consumes = "", manaCost = 10, 
 	buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
 	dblvarnames = { "damage", "velocity" }, dblvarvalues = { 5.0, 1.2 }, 
-	intvarnames = { "knockback", "fire", "qty", "bowshot", "explode", "teleport" }, intvarvalues = { 1, 1, 1, 0, 0, 0 }, 
+	intvarnames = { "knockback", "fire", "qty", "bowshot", "explode", "teleport", "fetch" }, intvarvalues = { 1, 1, 1, 0, 0, 0, 0 }, 
 	strvarnames = { "effects", "material" }, strvarvalues = { "POISON,BLEED", "COBWEB" }
 )
 public class Archer extends Skill implements Listener {
@@ -61,15 +64,19 @@ public class Archer extends Skill implements Listener {
 	@EventHandler
 	public void bowFire(EntityShootBowEvent event) {
 		if (event.getEntity() instanceof Player) {
+
 			Player p = (Player) event.getEntity();
 			if (!validSkillUser(p)) {
 				return;
 			}
+
 			SkillDataStore data = this.getPlayerSkillData(p);
 			// System.out.print(data.vars.toString());
 			Integer bowshot = ((Integer) data.vars.get("bowshot"));
+//			System.out.print("Launching arrow test: " + bowshot + " - " + this.getName());
 			if (bowshot == 1) {
 				Arrow ammo = (Arrow) event.getProjectile();
+//				System.out.print("Launching arrow bowshot: " + data.name);
 				launchArrow(p, ammo, data);
 				Integer qty = ((Integer) data.vars.get("qty"));
 				if (qty > 1) {
@@ -77,9 +84,9 @@ public class Archer extends Skill implements Listener {
 						launchArrow(p, null, data);
 					}
 				}
+				data.setLastUse(System.currentTimeMillis());
+				data.setLastUseLoc(p.getLocation());
 			}
-			data.setLastUse(System.currentTimeMillis());
-			data.setLastUseLoc(p.getLocation());
 		}
 	}
 
@@ -88,6 +95,7 @@ public class Archer extends Skill implements Listener {
 		Integer fire = ((Integer) data.vars.get("fire"));
 		Integer explode = ((Integer) data.vars.get("explode"));
 		Integer teleport = ((Integer) data.vars.get("teleport"));
+		Integer fetch = ((Integer) data.vars.get("fetch"));
 		Double damage = ((Double) data.vars.get("damage"));
 		Double velocity = ((Double) data.vars.get("velocity"));
 		String effects = ((String) data.vars.get("effects"));
@@ -117,6 +125,7 @@ public class Archer extends Skill implements Listener {
 		ammo.setMetadata("damage", new FixedMetadataValue(lq, damage));
 		ammo.setMetadata("explode", new FixedMetadataValue(lq, explode));
 		ammo.setMetadata("teleport", new FixedMetadataValue(lq, teleport));
+		ammo.setMetadata("fetch", new FixedMetadataValue(lq, fetch));
 		ammo.setMetadata("export", new FixedMetadataValue(lq, teleport));
 		ammo.setMetadata("material", new FixedMetadataValue(lq, material));
 		ammo.setMetadata("effects", new FixedMetadataValue(lq, effects));
@@ -197,6 +206,20 @@ public class Archer extends Skill implements Listener {
 				Integer exp = getMetaInteger(entity, "explode");
 				if (exp != null && exp > 0) {
 					hitBlock.getWorld().createExplosion(hitBlock.getRelative(BlockFace.UP).getLocation(), exp);
+				}
+				Integer fetch = getMetaInteger(entity, "fetch");
+				if (fetch != null && fetch > 0) {
+					ProjectileSource p = ((Arrow) entity).getShooter();
+					if (p instanceof Player) {
+						Location baseloc = ((Player) p).getLocation().clone();
+						List<Entity> entities = entity.getNearbyEntities(fetch,fetch,fetch);
+						for (Entity ent:entities){
+							EntityType et = ent.getType();
+							if (et == EntityType.DROPPED_ITEM || et == EntityType.EXPERIENCE_ORB || et == EntityType.ARROW) {
+								ent.teleport(baseloc.add((Math.random()-0.5), 0, (Math.random()-0.5)));
+							}
+						}
+					}
 				}
 			}
 		}

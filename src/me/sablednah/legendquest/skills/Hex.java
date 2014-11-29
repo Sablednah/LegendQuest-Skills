@@ -84,7 +84,15 @@ public class Hex extends Skill implements Listener {
 //						System.out.print(data.name+": Weapons list contains current item");
 
 						String eff = ((String) data.vars.get("effect"));
-						Effects ef = Effects.valueOf(eff.toUpperCase());  
+						
+					Effects ef = null;
+					try {
+						ef = Effects.valueOf(eff.toUpperCase());
+					} catch (IllegalArgumentException exp) {
+						lq.debug.warning("'"+ef + "' is not a valid effects name for skill '"+data.name+"'");
+						return;
+					}
+
 						EffectProcess ep = null;
 						if ((event.getEntity() instanceof Player)) {
 							Player p2 = (Player) event.getEntity();

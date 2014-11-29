@@ -16,9 +16,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-@SkillManifest(name = "MightyBlow", type = SkillType.TRIGGERED, author = "SableDnah", version = 1.1D, description = "Inflict [damage] enhanced melee Damage on target...", consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 0, dblvarnames = {
-		"explodepower", "chance" }, dblvarvalues = { 4.0, 50.0 }, intvarnames = { "damage", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "effectsduration", "lightning" }, intvarvalues = { 10, 1, 0, 1, 1, 600000, 0 }, strvarnames = {
-		"effects", "weapons" }, strvarvalues = { "SLOWBLEED", "" })
+@SkillManifest(name = "MightyBlow", type = SkillType.TRIGGERED, author = "SableDnah", version = 1.1D, description = "Inflict [damage] enhanced melee Damage on target...", 
+consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 0, 
+dblvarnames = {"explodepower", "chance" }, dblvarvalues = { 4.0, 50.0 }, 
+		intvarnames = { "damage", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "effectsduration", "lightning", "undeadonly" }, 
+		intvarvalues = { 10,       1,         0,                   1,               1,             600000,            0,           0 }, 
+		strvarnames = { "effects", "weapons" }, strvarvalues = { "SLOWBLEED", "" }
+)
 public class MightyBlow extends Skill implements Listener {
 
 	public boolean onEnable() {

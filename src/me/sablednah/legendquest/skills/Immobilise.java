@@ -62,7 +62,7 @@ public class Immobilise extends Skill {
 		mobspeed = (int) Math.ceil((1.0D-(speed*5.0D))/0.15D);
 		
 		if (r>0) {
-			if (p.getType() == EntityType.PLAYER) {
+			if (target.getType() == EntityType.PLAYER) {
 				((Player)target).setWalkSpeed((float)speed.doubleValue());
 				Bukkit.getServer().getScheduler().runTaskLater(lq, new ReSpeed(target.getUniqueId()), (long)(data.duration/50));			
 			} else {

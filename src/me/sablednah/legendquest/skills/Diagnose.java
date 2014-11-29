@@ -56,10 +56,11 @@ public class Diagnose extends Skill{
 			if (target.getCustomName()!= null && !target.getCustomName().isEmpty()) {
 				String tname = target.getCustomName();
 				tname = cleanName(tname);
-				p.sendMessage(tname+" is :"+target.getType().toString());
+				p.sendMessage(tname+" is: "+target.getType().toString());
 			} else {
-				p.sendMessage("Target is :"+target.getType().toString());
+				p.sendMessage("Target is: "+target.getType().toString());
 			}
+			if (target.hasMetadata("level")) { p.sendMessage("Level: "+target.getMetadata("level").get(0).asInt()); }
 		}
 
 		p.sendMessage(lq.configLang.statHealth+": "+target.getHealth()+" / "+target.getMaxHealth());

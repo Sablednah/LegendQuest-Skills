@@ -65,30 +65,31 @@ public class NightAffinity extends Skill implements Listener {
 		double damage = ((Double) data.vars.get("damage"));
 
 		// p.sendMessage("[ b "+b.getLightLevel()+" : s "+b.getLightFromSky()+" : sl "+light+" ]");
-
-		if (regenerate > 0.0D) {
-			if (light < minlight) {
-				if ((lq.players.ticks % ((regeninterval * 20) / lq.configMain.skillTickInterval)) == 0) {
-					getPC(p).heal(regenerate);
-/*
-					if (lq.configMain.debugMode) {
-						lq.debug.info(p.getDisplayName() + " DarkHeal: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
-						p.sendMessage("DarkHeal: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
+		if (!p.isDead()) {
+			if (regenerate > 0.0D) {
+				if (light < minlight) {
+					if ((lq.players.ticks % ((regeninterval * 20) / lq.configMain.skillTickInterval)) == 0) {
+						getPC(p).heal(regenerate);
+	/*
+						if (lq.configMain.debugMode) {
+							lq.debug.info(p.getDisplayName() + " DarkHeal: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
+							p.sendMessage("DarkHeal: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
+						}
+	*/
 					}
-*/
 				}
 			}
-		}
-		if (damage > 0.0D) {
-			if (light > maxlight) {
-				if ((lq.players.ticks % ((damageinterval * 20) / lq.configMain.skillTickInterval)) == 0) {
-					getPC(p).damage(damage);
-/*
- 					if (lq.configMain.debugMode) {
- 						lq.debug.info(p.getDisplayName() + " LightHurt: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
-						p.sendMessage("LightHurt: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
+			if (damage > 0.0D) {
+				if (light > maxlight) {
+					if ((lq.players.ticks % ((damageinterval * 20) / lq.configMain.skillTickInterval)) == 0) {
+						getPC(p).damage(damage);
+	/*
+	 					if (lq.configMain.debugMode) {
+	 						lq.debug.info(p.getDisplayName() + " LightHurt: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
+							p.sendMessage("LightHurt: " + light + " (sun:" + sun + " [b" + b.getLightLevel() + ":s" + b.getLightFromSky() + ":sl" + light + "]");
+						}
+	*/
 					}
-*/
 				}
 			}
 		}

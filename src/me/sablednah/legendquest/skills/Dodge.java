@@ -62,7 +62,7 @@ public class Dodge extends Skill implements Listener {
 			SkillDataStore data = this.getPlayerSkillData(p);
 			String message = (String) data.vars.get("message");
 
-			event.setDodgeChance(event.getDodgeChance() + ((Integer) data.vars.get("dodgemod")));
+			event.setDodgeChance(event.getDodgeChance() - ((Integer) data.vars.get("dodgemod")));
 			if (!message.isEmpty()){p.sendMessage(message);}
 		}
 	}

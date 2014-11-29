@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 @SkillManifest(name = "HealingTouch", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
 description = "Heal touched target by [heal] health.", 
 consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
-buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
+buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
 dblvarnames = { "heal", "chance" }, dblvarvalues = { 10.0, 100.0 }, 
 intvarnames = { "effectsduration" }, intvarvalues = { 10000 }, 
 strvarnames = { "removeeffects", "holding", "effects" }, strvarvalues = { "SLOWBLEED,BLEED,POISON", "MAGMA_CREAM", "REGENERATE" }
@@ -127,6 +127,9 @@ public class HealingTouch extends Skill implements Listener {
 			if ((weapons.contains(p.getItemInHand().getType()))) {
 
 				// ok so you have looked at a valid target
+				data.setLastUse(0);  ///single use only.
+				data.setActive(false);
+				data.setCanceled(true);
 
 				if (removeeffects != null && !removeeffects.isEmpty()) {
 					list = removeeffects.split("\\s*,\\s*");

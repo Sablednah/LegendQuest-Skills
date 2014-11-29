@@ -22,29 +22,39 @@ public class Aura extends Skill {
 		return true;
 	}
 
-	public void onDisable() { /* nothing to do */
-	}
+	public void onDisable() { /* nothing to do */ }
 
 	public CommandResult onCommand(Player p) { 
+//		System.out.print("Using aura skill: "+p.getName());
 		if (!validSkillUser(p)) {
+//			System.out.print("Aura skill fail: "+p.getName());
 			return CommandResult.FAIL;
 		}
+//		System.out.print("aura skill valid: "+p.getName());
 
 		// load skill options
 		SkillDataStore data = this.getPlayerSkillData(p);
+//		System.out.print("aura skill valid: "+data.aliasedname + "-"+data.name + "-" + data.getPhase().toString());
+		
 		String eff = ((String) data.vars.get("effect"));
 
+//		System.out.print("Using aura effect: "+eff);
+		
+		Effects ef = null;
 		try {
-			Effects ef = Effects.valueOf(eff.toUpperCase());  
-			EffectProcess ep =  new EffectProcess(ef, System.currentTimeMillis(), data.duration, OwnerType.PLAYER, p.getUniqueId());
-			lq.effectManager.addPendingProcess(ep);
-			String msg = ((String) data.vars.get("message"));
-			p.sendMessage(msg);
-
+			ef = Effects.valueOf(eff.toUpperCase());  
 		} catch (IllegalArgumentException exp) {
 			lq.debug.warning("'"+eff + "' is not a valid effects name for skill '"+data.name+"'");
 			return CommandResult.FAIL;
 		}
+
+//		System.out.print("Using aura duration: "+data.duration);
+		
+		EffectProcess ep =  new EffectProcess(ef, System.currentTimeMillis(), data.duration, OwnerType.PLAYER, p.getUniqueId());
+		lq.effectManager.addPendingProcess(ep);
+		String msg = ((String) data.vars.get("message"));
+		p.sendMessage(msg);
+
 		return CommandResult.SUCCESS;
 	}
 }

@@ -1,5 +1,7 @@
 package me.sablednah.legendquest.skills;
 
+import java.util.List;
+
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
@@ -7,6 +9,7 @@ import me.sablednah.legendquest.playercharacters.PC;
 import me.sablednah.legendquest.utils.Utils;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -35,12 +38,21 @@ public class Hurt extends Skill implements Listener {
 
 	public CommandResult onCommand(Player p) { 
 		if (!validSkillUser(p)) {
+//			p.sendMessage("Not valid user..");
 			return CommandResult.FAIL;
 		}
 
+//		p.sendMessage("Valid user loading skilldata");
+		
 		// load skill options
 		SkillDataStore data = this.getPlayerSkillData(p);
-
+		
+//		p.sendMessage(data.getlastArgs() + " getlastArgs");
+//		p.sendMessage(data.getLastUse() + " lastuse");
+//		p.sendMessage(data.getLastUseLoc() + " lastuseloc");
+//		p.sendMessage(data.getPhase() + " phase");
+//		p.sendMessage(data.getTimeLeft() + " TimeLeft");
+		
 		Integer distance = ((Integer) data.vars.get("distance"));
 		Integer r = ((Integer) data.vars.get("radius"));
 		Integer effectsduration = ((Integer) data.vars.get("effectsduration"));
@@ -70,16 +82,26 @@ public class Hurt extends Skill implements Listener {
 			return CommandResult.FAIL;
 		}
 
+//		p.sendMessage("damaging: " + target.getCustomName() + " ["+target.getType().toString()+"]");
+//		p.sendMessage("r: " + r);
+//		p.sendMessage("undeadonly: " + undeadonly);
+		
+
 		// ok so you have looked at a valid target
 		if (bypassmagicarmour>0) {
 			//get magic armour value andd add to damage to negate.
 		}
 		
 		if (r>0) {
-			for (Entity e: target.getNearbyEntities(r,r,r)) {
-				if (e instanceof LivingEntity) {
-					if (undeadonly == 0 || (undeadonly >0 && (target.getType() == EntityType.ZOMBIE || target.getType() == EntityType.PIG_ZOMBIE || target.getType() == EntityType.GIANT || target.getType() == EntityType.SKELETON ) ) ) {
-						doStuff((LivingEntity) e, damage, p, lightning, m, effects, effectsduration, heal);
+			List<Entity> near = target.getNearbyEntities(r,r,r);
+			if (!near.contains(target)) { near.add(target); }
+			for (Entity e: near) {
+				if (!e.equals(p)) {
+					if (e instanceof LivingEntity) {
+//						p.sendMessage("damaging: " + ((LivingEntity)e).getCustomName() + " ["+e.getType().toString()+"]");
+						if (undeadonly == 0 || (undeadonly >0 && (target.getType() == EntityType.ZOMBIE || target.getType() == EntityType.PIG_ZOMBIE || target.getType() == EntityType.GIANT || target.getType() == EntityType.SKELETON ) ) ) {
+							doStuff((LivingEntity) e, damage, p, lightning, m, effects, effectsduration, heal);
+						}
 					}
 				}
 			}
@@ -94,7 +116,18 @@ public class Hurt extends Skill implements Listener {
 		}
 
 		if (teleport != null && teleport >0) {
+			if (teleport==1) {
+				if (p.getLocation().distanceSquared(target.getLocation())>4.0D) {
+					BlockFace ytf = yawToFace(p.getLocation().getYaw());
+					Location tloc = target.getLocation().add(ytf.getModX(), 0, ytf.getModZ());
+					tloc.setYaw(p.getLocation().getYaw());
+					tloc.setPitch(p.getLocation().getPitch());
+					p.teleport(  tloc  );			
+					//System.out.print("Facing: "+ytf.toString());
+				}
+			} else {
 				p.teleport(target.getLocation());
+			}
 		}
 
 		
@@ -139,6 +172,34 @@ public class Hurt extends Skill implements Listener {
 				}
 			}
 		}
-		
 	}
+	 public static final BlockFace[] axis = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+	 public static final BlockFace[] radial = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
+	   
+	    /**
+	    * Gets the horizontal Block Face from a given yaw angle<br>
+	    * This includes the NORTH_WEST faces
+	    *
+	    * @param yaw angle
+	    * @return The Block Face of the angle
+	    */
+	    public static BlockFace yawToFace(float yaw) {
+	        return yawToFace(yaw, true);
+	    }
+	 
+	    /**
+	    * Gets the horizontal Block Face from a given yaw angle
+	    *
+	    * @param yaw angle
+	    * @param useSubCardinalDirections setting, True to allow NORTH_WEST to be returned
+	    * @return The Block Face of the angle
+	    */
+	    public static BlockFace yawToFace(float yaw, boolean useSubCardinalDirections) {
+	        if (useSubCardinalDirections) {
+	            return radial[Math.round(yaw / 45f) & 0x7];
+	        } else {
+	            return axis[Math.round(yaw / 90f) & 0x3];
+	        }
+	    }
+
 }

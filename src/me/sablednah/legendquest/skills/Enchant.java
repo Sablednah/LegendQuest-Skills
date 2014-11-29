@@ -41,7 +41,13 @@ public class Enchant extends Skill {
 		Block block = p.getTargetBlock(null, 100);
 		Location bl = block.getRelative(BlockFace.UP).getLocation();
 		
-		Effects ef = Effects.valueOf(eff.toUpperCase());
+		Effects ef = null;
+		try {
+			ef = Effects.valueOf(eff.toUpperCase());  
+		} catch (IllegalArgumentException exp) {
+			lq.debug.warning("'"+eff + "' is not a valid effects name for skill '"+data.name+"'");
+			return CommandResult.FAIL;
+		}
 		
 		EffectProcess ep =  new EffectProcess(ef, data.duration, OwnerType.LOCATATION, bl, radius);
 		lq.effectManager.addPendingProcess(ep);
