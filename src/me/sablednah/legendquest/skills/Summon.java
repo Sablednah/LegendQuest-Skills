@@ -1,5 +1,6 @@
 package me.sablednah.legendquest.skills;
 
+import java.util.HashSet;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
@@ -38,7 +39,7 @@ public class Summon extends Skill {
 			@SuppressWarnings("deprecation")
 			EntityType type = EntityType.fromName(mobName);
 			@SuppressWarnings("deprecation")
-			Block block = p.getTargetBlock(null, 100);
+			Block block = p.getTargetBlock((HashSet<Byte>) null, 100);
 			Location bl = block.getLocation();
 			for(int i=1; i<=qty; i++){
 				//slightly randomise position so they don't do that weird stacking effect!

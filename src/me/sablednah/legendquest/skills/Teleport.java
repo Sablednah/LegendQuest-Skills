@@ -1,5 +1,6 @@
 package me.sablednah.legendquest.skills;
 
+import java.util.HashSet;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
 import org.bukkit.Location;
@@ -26,7 +27,7 @@ public class Teleport extends Skill {
 		Integer maxrange = ((Integer) data.vars.get("maxrange"));
 
 		@SuppressWarnings("deprecation")
-		Block block = p.getTargetBlock(null, maxrange);
+		Block block = p.getTargetBlock((HashSet<Byte>) null, maxrange);
 		Location bl = block.getLocation();
 		// slightly randomise position so they don't do that weird stacking effect!
 		Location bl2 = bl.clone();

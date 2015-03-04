@@ -1,5 +1,6 @@
 package me.sablednah.legendquest.skills;
 
+import java.util.HashSet;
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
@@ -38,7 +39,7 @@ public class Enchant extends Skill {
 		Integer radius = ((Integer) data.vars.get("radius"));
 		
 		@SuppressWarnings("deprecation")
-		Block block = p.getTargetBlock(null, 100);
+		Block block = p.getTargetBlock((HashSet<Byte>) null, 100);
 		Location bl = block.getRelative(BlockFace.UP).getLocation();
 		
 		Effects ef = null;
