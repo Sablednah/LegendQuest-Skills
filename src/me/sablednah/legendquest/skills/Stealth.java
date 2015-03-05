@@ -154,7 +154,8 @@ public class Stealth extends Skill implements Listener {
 			if (p!=null && p.isOnline()) {
 				PC pc = getPC(p);
 				if (p.isSneaking()) {
-					p.setWalkSpeed(pc.getSpeed()*3.0F);
+					float newspeed = Math.min(1.0F, pc.getSpeed()*3.0F); 
+					p.setWalkSpeed(newspeed);
 					Bukkit.getServer().getScheduler().runTaskLater(lq, new SetSpeed(uuid), 1L);
 				} else {
 					p.setWalkSpeed(pc.getSpeed());
