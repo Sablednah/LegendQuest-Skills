@@ -97,7 +97,7 @@ public class MightyBlow extends Skill implements Listener {
 
 				boolean any = false;
 				ArrayList<Material> weapons = new ArrayList<Material>();
-				String w = ((String) data.vars.get("holding"));
+				String w = ((String) data.vars.get("weapons"));
 				if (w == null) {
 					w = "";
 					weapons.add(null);

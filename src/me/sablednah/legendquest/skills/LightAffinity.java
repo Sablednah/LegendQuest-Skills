@@ -70,14 +70,14 @@ public class LightAffinity extends Skill implements Listener {
 		if (!p.isDead()) {
 			if (damage>0.0D) {
 				if (light<minlight) { // dark
-					if ((lq.players.ticks % ((regeninterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
+					if ((lq.players.ticks % ((damageinterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
 						getPC(p).damage(damage);
 					}
 				}
 			}
 			if (regenerate>0.0D) {
 				if (light>maxlight) {
-					if ((lq.players.ticks % ((damageinterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
+					if ((lq.players.ticks % ((regeninterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
 						getPC(p).heal(regenerate);
 					}
 				}
