@@ -41,7 +41,7 @@ public class Diagnose extends Skill{
 		// Get target
 		LivingEntity target = Utils.getTarget(p, distance);
 		if (target == null) {
-			p.sendMessage("Sorry, you need to look at a target...");
+			p.sendMessage(lq.configLang.skillInvalidTarget);
 			return CommandResult.FAIL;
 		}
 

@@ -3,11 +3,20 @@ package me.sablednah.legendquest.skills;
 import java.util.HashSet;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-@SkillManifest(name = "teleport", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Teleport upto [maxrange]", consumes = "ENDER_PEARL", manaCost = 5, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 0, cooldown = 10000, dblvarnames = {}, dblvarvalues = {}, intvarnames = { "maxrange" }, intvarvalues = { 16 }, strvarnames = {}, strvarvalues = {})
+@SkillManifest(name = "teleport", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
+description = "Teleport upto [maxrange]", 
+consumes = "ENDER_PEARL", manaCost = 5, levelRequired = 0, skillPoints = 0, 
+buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
+dblvarnames = {}, dblvarvalues = {}, 
+intvarnames = { "maxrange", "signal", "sound" }, intvarvalues = { 16, 0, 0 }, 
+strvarnames = {}, strvarvalues = {}
+)
 public class Teleport extends Skill {
 
 	public boolean onEnable() {
@@ -25,6 +34,8 @@ public class Teleport extends Skill {
 		// load skill options
 		SkillDataStore data = this.getPlayerSkillData(p);
 		Integer maxrange = ((Integer) data.vars.get("maxrange"));
+		Integer signal = ((Integer) data.vars.get("signal"));
+		Integer sound = ((Integer) data.vars.get("sound"));
 
 		@SuppressWarnings("deprecation")
 		Block block = p.getTargetBlock((HashSet<Byte>) null, maxrange);
@@ -41,7 +52,14 @@ public class Teleport extends Skill {
 			p.sendMessage("Can't teleport here...");
 			return CommandResult.FAIL;
 		}
-		
+		if (signal != 0) {
+			p.getLocation().getWorld().playEffect(p.getLocation(),Effect.ENDER_SIGNAL,0);
+			bl2.getWorld().playEffect(bl2,Effect.ENDER_SIGNAL,0);
+		}
+		if (sound != 0) {
+			p.getLocation().getWorld().playSound(p.getLocation(),Sound.ENDERMAN_TELEPORT,10.0F,1.0F);
+			bl2.getWorld().playSound(bl2,Sound.ENDERMAN_TELEPORT,10.0F,1.0F);
+		}
 		p.teleport(bl2);
 
 		return CommandResult.SUCCESS;

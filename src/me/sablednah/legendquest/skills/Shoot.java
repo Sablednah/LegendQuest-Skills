@@ -19,13 +19,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
+import org.bukkit.util.Vector;
 
 @SkillManifest(name = "Shoot", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
 description = "Fire a [projectile]", 
 consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
 dblvarnames = { "damage" }, dblvarvalues = { 5.0 }, 
-intvarnames = { "power", "fire" }, intvarvalues = { 1, 1 }, 
+intvarnames = { "power", "fire", "qty" }, intvarvalues = { 1, 1, 1 }, 
 strvarnames = { "projectile" }, strvarvalues = { "FIREBALL" }
 )
 public class Shoot extends Skill implements Listener {
@@ -47,6 +48,17 @@ public class Shoot extends Skill implements Listener {
 
 		// System.out.print("data: "+getName()+" | "+data.aliasedname+" | "+data.name + " | " +data.description );
 		// System.out.print("vars:" + data.vars.toString());
+
+		Integer qty = ((Integer) data.vars.get("qty"));
+
+		for (int i = 0; i < qty; i++) {
+			shoot(p, data, i);
+		}
+		
+		return CommandResult.SUCCESS;
+	}
+	
+	public void shoot(Player p, SkillDataStore data, int i) {
 
 		String projectile = ((String) data.vars.get("projectile"));
 		Integer power = ((Integer) data.vars.get("power"));
@@ -90,8 +102,26 @@ public class Shoot extends Skill implements Listener {
 		
 		ammo.setMetadata("damage", new FixedMetadataValue(lq, damage));
 		ammo.setMetadata("skillname", new FixedMetadataValue(lq, getName()));
+		
+		if (i>0) {  // spread shots a little
+			Vector v = ammo.getVelocity();
+			double x, y, z;
+			x = v.getX();
+			y = v.getY();
+			z = v.getZ();
+			// System.out.print(x+" - "+y+" - "+z);
+			x = x + ((Math.random() - 0.5D) / 3);
+			y = y + ((Math.random() - 0.5D) / 5);
+			z = z + ((Math.random() - 0.5D) / 3);
+			// System.out.print(x+" - "+y+" - "+z);
+			v.setX(x);
+			v.setY(y);
+			v.setZ(z);
+			ammo.setVelocity(v);
 
-		return CommandResult.SUCCESS;
+			
+		}
+
 	}
 
 	@EventHandler
@@ -126,4 +156,6 @@ public class Shoot extends Skill implements Listener {
 		return "";
 	}
 
+	
+	
 }

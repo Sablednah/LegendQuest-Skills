@@ -24,8 +24,8 @@ description = "Inflict [damage] Damage on target...",
 consumes = "", manaCost = 10, levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 10000, 
 dblvarnames = { "explodepower", "damage", "heal" }, dblvarvalues = { 4.0, 5.0 , 5.0}, 
-intvarnames = {	"distance", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "teleport", "effectsduration", "radius", "lightning", "undeadonly"}, 
-intvarvalues = { 10, 1, 0, 1, 1, 1, 600000, 0, 0, 0 }, 
+intvarnames = {	"distance", "explode", "bypassmagicarmour", "explodeblocks", "explodefire", "teleport", "effectsduration", "radius", "lightning", "undeadonly", "materialduration"}, 
+intvarvalues = { 10, 1, 0, 1, 1, 1, 600000, 0, 0, 0, 0 }, 
 strvarnames = { "effects", "material" }, strvarvalues = { "SLOWBLEED", "WEB" }
 )
 public class Hurt extends Skill implements Listener {
@@ -68,7 +68,7 @@ public class Hurt extends Skill implements Listener {
 		String effects = ((String) data.vars.get("effects"));
 		String m = ((String) data.vars.get("material"));
 		Double heal = ((Double) data.vars.get("heal"));
-
+		Integer materialduration = ((Integer) data.vars.get("materialduration"));
 		
 		// Get target
 		LivingEntity target = Utils.getTarget(p, distance);
@@ -100,14 +100,14 @@ public class Hurt extends Skill implements Listener {
 					if (e instanceof LivingEntity) {
 //						p.sendMessage("damaging: " + ((LivingEntity)e).getCustomName() + " ["+e.getType().toString()+"]");
 						if (undeadonly == 0 || (undeadonly >0 && (target.getType() == EntityType.ZOMBIE || target.getType() == EntityType.PIG_ZOMBIE || target.getType() == EntityType.GIANT || target.getType() == EntityType.SKELETON ) ) ) {
-							doStuff((LivingEntity) e, damage, p, lightning, m, effects, effectsduration, heal);
+							doStuff((LivingEntity) e, damage, p, lightning, m, effects, effectsduration, heal, materialduration);
 						}
 					}
 				}
 			}
 		} else {
 			if (undeadonly == 0 || (undeadonly >0 && (target.getType() == EntityType.ZOMBIE || target.getType() == EntityType.PIG_ZOMBIE || target.getType() == EntityType.GIANT || target.getType() == EntityType.SKELETON ) ) ) {
-				doStuff(target, damage, p, lightning, m, effects, effectsduration, heal);				
+				doStuff(target, damage, p, lightning, m, effects, effectsduration, heal, materialduration);
 			}
 		}
 		
@@ -135,7 +135,7 @@ public class Hurt extends Skill implements Listener {
 
 		return CommandResult.SUCCESS;
 	}
-	public void doStuff(LivingEntity target, double damage, Player p, int lightning, String m, String effects, int duration, double heal) {
+	public void doStuff(LivingEntity target, double damage, Player p, int lightning, String m, String effects, int duration, double heal, int materialduration) {
 		target.damage(damage, p);
 		PC pc =  getPC(p);
 		pc.heal(heal, target);
@@ -161,45 +161,68 @@ public class Hurt extends Skill implements Listener {
 				Block b = target.getLocation().getBlock();
 				if (b != null && b.getType()==Material.AIR) {
 					if (PluginUtils.canBuild(b, p)) {
+						if (materialduration>0) {
+							lq.getServer().getScheduler().runTaskLater(lq, new ReplaceMaterial(b.getLocation(),b.getType(),mat), materialduration);
+						}
 						b.setType(mat);
 					}
 				}
 				b = target.getLocation().getBlock().getRelative(BlockFace.UP);
 				if (b != null && b.getType()==Material.AIR) {
 					if (PluginUtils.canBuild(b, p)) {
+						if (materialduration>0) {
+							lq.getServer().getScheduler().runTaskLater(lq, new ReplaceMaterial(b.getLocation(),b.getType(),mat), materialduration);
+						}
 						b.setType(mat);
 					}
 				}
 			}
 		}
 	}
-	 public static final BlockFace[] axis = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
-	 public static final BlockFace[] radial = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
+	
+	public static final BlockFace[] axis = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+	public static final BlockFace[] radial = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
 	   
-	    /**
-	    * Gets the horizontal Block Face from a given yaw angle<br>
-	    * This includes the NORTH_WEST faces
-	    *
-	    * @param yaw angle
-	    * @return The Block Face of the angle
-	    */
-	    public static BlockFace yawToFace(float yaw) {
-	        return yawToFace(yaw, true);
-	    }
+	/**
+	* Gets the horizontal Block Face from a given yaw angle<br>
+	* This includes the NORTH_WEST faces
+	*
+	* @param yaw angle
+	* @return The Block Face of the angle
+	*/
+	public static BlockFace yawToFace(float yaw) {
+	    return yawToFace(yaw, true);
+	}
 	 
 	    /**
-	    * Gets the horizontal Block Face from a given yaw angle
-	    *
-	    * @param yaw angle
-	    * @param useSubCardinalDirections setting, True to allow NORTH_WEST to be returned
-	    * @return The Block Face of the angle
-	    */
-	    public static BlockFace yawToFace(float yaw, boolean useSubCardinalDirections) {
-	        if (useSubCardinalDirections) {
-	            return radial[Math.round(yaw / 45f) & 0x7];
-	        } else {
-	            return axis[Math.round(yaw / 90f) & 0x3];
-	        }
+	* Gets the horizontal Block Face from a given yaw angle
+	*
+	* @param yaw angle
+	* @param useSubCardinalDirections setting, True to allow NORTH_WEST to be returned
+	* @return The Block Face of the angle
+	*/
+	public static BlockFace yawToFace(float yaw, boolean useSubCardinalDirections) {
+	    if (useSubCardinalDirections) {
+	        return radial[Math.round(yaw / 45f) & 0x7];
+	    } else {
+	        return axis[Math.round(yaw / 90f) & 0x3];
 	    }
+	}
+
+	public class ReplaceMaterial implements Runnable {
+		public Location l;
+		public Material m;
+		public Material temp;
+		public ReplaceMaterial(Location l, Material m, Material temp){
+			this.l=l;
+			this.m=m;
+			this.temp=temp;
+		}
+		public void run() {
+			if (l.getBlock().getType() == temp) { // only swap if correct material
+				l.getBlock().setType(m);
+			}
+		}
+	}
 
 }

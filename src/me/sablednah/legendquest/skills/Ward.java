@@ -14,8 +14,14 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.entity.Entity;
 
-@SkillManifest(name = "Ward", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, description = "Prevent [entities] from approaching near...", consumes = "", manaCost = 0, pay = 1, xp = 10, levelRequired = 0, skillPoints = 0, buildup = 0, delay = 0, duration = 30000, cooldown = 60000, dblvarnames = {}, dblvarvalues = {}, intvarnames = { "range" }, intvarvalues = { 4 }, strvarnames = {
-		"entities", "message" }, strvarvalues = { "Zombie,Skeleton", "Ward Active" })
+@SkillManifest(name = "Ward", type = SkillType.ACTIVE, author = "SableDnah", version = 1.0D, 
+description = "Prevent [entities] from approaching near...", 
+consumes = "", manaCost = 0, pay = 0, xp = 0, levelRequired = 0, skillPoints = 0, 
+buildup = 0, delay = 0, duration = 30000, cooldown = 60000, 
+dblvarnames = {}, dblvarvalues = {}, 
+intvarnames = { "range" }, intvarvalues = { 4 }, 
+strvarnames = {"entities", "message" }, strvarvalues = { "Zombie,Skeleton", "Ward Active" }
+)
 public class Ward extends Skill implements Listener {
 
 	public boolean onEnable() {

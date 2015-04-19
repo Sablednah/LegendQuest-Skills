@@ -34,7 +34,7 @@ import org.bukkit.util.Vector;
 	levelRequired = 0, skillPoints = 0, consumes = "", manaCost = 10, 
 	buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
 	dblvarnames = { "damage", "velocity" }, dblvarvalues = { 5.0, 1.2 }, 
-	intvarnames = { "knockback", "fire", "qty", "bowshot", "explode", "teleport", "fetch" }, intvarvalues = { 1, 1, 1, 0, 0, 0, 0 }, 
+	intvarnames = { "knockback", "fire", "qty", "bowshot", "explode", "teleport", "fetch", "materialduration" }, intvarvalues = { 1, 1, 1, 0, 0, 0, 0, 0 }, 
 	strvarnames = { "effects", "material" }, strvarvalues = { "POISON,BLEED", "COBWEB" }
 )
 public class Archer extends Skill implements Listener {
@@ -100,6 +100,8 @@ public class Archer extends Skill implements Listener {
 		Double velocity = ((Double) data.vars.get("velocity"));
 		String effects = ((String) data.vars.get("effects"));
 		String material = ((String) data.vars.get("material"));
+		Integer materialduration = ((Integer) data.vars.get("materialduration"));
+		
 		if (ammo == null) {
 			ammo = p.launchProjectile(Arrow.class);
 		}
@@ -128,6 +130,7 @@ public class Archer extends Skill implements Listener {
 		ammo.setMetadata("fetch", new FixedMetadataValue(lq, fetch));
 		ammo.setMetadata("export", new FixedMetadataValue(lq, teleport));
 		ammo.setMetadata("material", new FixedMetadataValue(lq, material));
+		ammo.setMetadata("materialduration", new FixedMetadataValue(lq, materialduration));
 		ammo.setMetadata("effects", new FixedMetadataValue(lq, effects));
 		ammo.setMetadata("duration", new FixedMetadataValue(lq, data.duration));
 	}
@@ -179,6 +182,8 @@ public class Archer extends Skill implements Listener {
 					}
 				}
 				String m = getMetaString(entity, "material");
+				Integer materialduration = getMetaInteger(entity, "materialduration");
+
 				if (m != null && !m.isEmpty()) {
 					Material mat = Material.matchMaterial(m);
 					if (mat != null) {
@@ -190,6 +195,9 @@ public class Archer extends Skill implements Listener {
 							if (p instanceof Player) {
 								pl = (Player) p;
 								if (PluginUtils.canBuild(b, pl)) {
+									if (materialduration>0) {
+										lq.getServer().getScheduler().runTaskLater(lq, new ReplaceMaterial(b.getLocation(),b.getType(),mat), materialduration);
+									}
 									b.setType(mat);
 								}
 							}
@@ -266,4 +274,21 @@ public class Archer extends Skill implements Listener {
 		}
 		return "";
 	}
+	
+	public class ReplaceMaterial implements Runnable {
+		public Location l;
+		public Material m;
+		public Material temp;
+		public ReplaceMaterial(Location l, Material m, Material temp){
+			this.l=l;
+			this.m=m;
+			this.temp=temp;
+		}
+		public void run() {
+			if (l.getBlock().getType() == temp) { // only swap if correct material
+				l.getBlock().setType(m);
+			}
+		}
+	}
+
 }
