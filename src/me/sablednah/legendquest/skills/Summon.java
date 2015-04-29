@@ -8,14 +8,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-@SkillManifest(name = "Summon", type = SkillType.ACTIVE, author = "SableDnah", version = 2.1D, 
+@SkillManifest(name = "Summon", type = SkillType.ACTIVE, author = "SableDnah", version = 3.0D, 
 description = "Summon [qty]x[entity]", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 0, cooldown = 100000, 
-dblvarnames = { "maxhealth"}, dblvarvalues = { 0.0D }, 
-intvarnames = { "qty" }, intvarvalues = { 1 }, 
-strvarnames = { "entity" }, strvarvalues = { "pig" }
+dblvarnames = { "maxhealth" }, dblvarvalues = { 0.0D }, 
+intvarnames = { "qty", "range" }, intvarvalues = { 1, 100 }, 
+strvarnames = { "entity", "name" }, strvarvalues = { "pig", "" }
 )
 public class Summon extends Skill {
 
@@ -33,14 +33,22 @@ public class Summon extends Skill {
 		// load skill options
 		SkillDataStore data = this.getPlayerSkillData(p);
 		String mobName = ((String) data.vars.get("entity"));
+		String name = ((String) data.vars.get("name"));
 		Integer qty = ((Integer) data.vars.get("qty"));
-		Double maxhealth = ((Double) data.vars.get("maxhealth"));		
+		Double maxhealth = ((Double) data.vars.get("maxhealth"));
+		Integer range = ((Integer) data.vars.get("range"));
+
 		try {
 			@SuppressWarnings("deprecation")
 			EntityType type = EntityType.fromName(mobName);
-			@SuppressWarnings("deprecation")
-			Block block = p.getTargetBlock((HashSet<Byte>) null, 100);
-			Location bl = block.getLocation();
+			Location bl = null;
+			if (range>0) {
+				@SuppressWarnings("deprecation")
+				Block block = p.getTargetBlock((HashSet<Byte>) null, range);
+				bl = block.getLocation();
+			} else {
+				bl = p.getLocation();
+			}
 			for(int i=1; i<=qty; i++){
 				//slightly randomise position so they don't do that weird stacking effect!
 				Location bl2 = bl.clone();
@@ -55,6 +63,9 @@ public class Summon extends Skill {
 						((Damageable)l).setMaxHealth(maxhealth);
 						((Damageable)l).setHealth(maxhealth);
 					}
+				}
+				if (name != null && !name.isEmpty()) {
+					l.setCustomName(name);
 				}
 			}
 		} catch (IllegalArgumentException exp) {

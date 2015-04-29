@@ -10,13 +10,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-@SkillManifest(name = "Enchant", type = SkillType.ACTIVE, author = "SableDnah", version = 1.2D, 
+@SkillManifest(name = "Enchant", type = SkillType.ACTIVE, author = "SableDnah", version = 2.1D, 
 description = "Apply [effect] to area of [radius] block radius.", 
 consumes = "", manaCost = 5, 
 levelRequired = 0, skillPoints = 0, 
 buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
 dblvarnames = {}, dblvarvalues = {}, 
-intvarnames = {"radius"}, intvarvalues = { 3 }, 
+intvarnames = {"radius", "range"}, intvarvalues = { 3, 100 }, 
 strvarnames = { "effect","message" }, strvarvalues = { "CONFUSION","Nauseous..." }
 )
 public class Enchant extends Skill {
@@ -37,11 +37,16 @@ public class Enchant extends Skill {
 		SkillDataStore data = this.getPlayerSkillData(p);
 		String eff = ((String) data.vars.get("effect"));
 		Integer radius = ((Integer) data.vars.get("radius"));
+		Integer range = ((Integer) data.vars.get("range"));
 		
-		@SuppressWarnings("deprecation")
-		Block block = p.getTargetBlock((HashSet<Byte>) null, 100);
-		Location bl = block.getRelative(BlockFace.UP).getLocation();
-		
+		Location bl = null;
+		if (range > 0) {
+			@SuppressWarnings("deprecation")
+			Block block = p.getTargetBlock((HashSet<Byte>) null, range);
+			bl = block.getRelative(BlockFace.UP).getLocation();
+		} else {
+			bl = p.getLocation();
+		}
 		Effects ef = null;
 		try {
 			ef = Effects.valueOf(eff.toUpperCase());  
