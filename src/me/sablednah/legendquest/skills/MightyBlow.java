@@ -1,12 +1,14 @@
 package me.sablednah.legendquest.skills;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
 import me.sablednah.legendquest.events.CombatModifiers;
 import me.sablednah.legendquest.playercharacters.PC;
+import me.sablednah.legendquest.utils.plugins.MagicItemsQuarentine;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
 import org.bukkit.Material;
@@ -15,6 +17,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 @SkillManifest(
 		name = "MightyBlow", type = SkillType.TRIGGERED, author = "SableDnah", version = 1.1D, description = "Inflict [damage] enhanced melee Damage on target...", 
@@ -135,9 +138,18 @@ public class MightyBlow extends Skill implements Listener {
 
 					// ok so you have looked at a valid target
 
-					if (bypassmagicarmour > 0) {
-						// get magic armour value andd add to damage to negate.
+					if (bypassmagicarmour>0) {
+						//get magic armour value and add to damage to negate.
+						List<ItemStack> gear = MagicItemsQuarentine.getEquipment(target);
+						if (gear!=null) {
+							int mav = MagicItemsQuarentine.getDefenceMod(gear);
+							
+System.out.print("Bypassing armour: " + mav);
+
+							damage += mav;
+						}
 					}
+
 
 					if (explode > 0) {
 						target.getWorld().createExplosion(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ(), explodepower.floatValue(), (explodefire > 0), (explodeblocks > 0));

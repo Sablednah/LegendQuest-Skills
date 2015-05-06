@@ -7,11 +7,12 @@ import me.sablednah.legendquest.playercharacters.PC;
 import me.sablednah.legendquest.utils.Utils;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,7 +24,7 @@ dblvarnames = { "speed" }, dblvarvalues = { 0.0 },
 intvarnames = {	"distance" , "radius" }, intvarvalues = { 10, 5 }, 
 strvarnames = { }, strvarvalues = { }
 )
-public class Immobilise extends Skill {
+public class Immobilise extends Skill implements Listener {
 
 	public boolean onEnable() {
 		return true;
@@ -42,6 +43,7 @@ public class Immobilise extends Skill {
 		Integer distance = ((Integer) data.vars.get("distance"));
 		Double speed = ((Double) data.vars.get("speed"));
 
+
 		// Get target
 		LivingEntity target = Utils.getTarget(p, distance);
 		if (target == null) {
@@ -49,25 +51,38 @@ public class Immobilise extends Skill {
 			return CommandResult.FAIL;
 		}
 
+		
 		if (!PluginUtils.canBuild(target.getLocation(), p)) {
 			p.sendMessage("Target is in safe location...");
 			return CommandResult.FAIL;
 		}
 
+
 		// ok so you have looked at a player and are picking their pocket.
 		
 		Integer r = ((Integer) data.vars.get("radius"));
 
+		
+
 		int mobspeed = 0;
 		mobspeed = (int) Math.ceil((1.0D-(speed*5.0D))/0.15D);
+		
+		long time = System.currentTimeMillis();
+		time += data.duration;
+
+
 		
 		if (r>0) {
 			List<Entity> entlist = target.getNearbyEntities(r,r,r);
 			for (Entity e : entlist) {
 				if (e instanceof LivingEntity) {
 					if (e.getType() == EntityType.PLAYER) {
-						((Player)e).setWalkSpeed((float)speed.doubleValue());
-						Bukkit.getServer().getScheduler().runTaskLater(lq, new ReSpeed(e.getUniqueId()), (long)(data.duration/50));			
+//						((Player)e).setWalkSpeed((float)speed.doubleValue());
+//						Bukkit.getServer().getScheduler().runTaskLater(lq, new ReSpeed(e.getUniqueId()), (long)(data.duration/50));
+
+						target.setMetadata("cursetimeout", new FixedMetadataValue(lq, (time) ));
+						target.setMetadata("speed", new FixedMetadataValue(lq, -1.0D));
+
 					} else {
 						((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.SLOW,(int)(data.duration/50),(mobspeed-1)));
 					}
@@ -75,8 +90,11 @@ public class Immobilise extends Skill {
 			}
 		} else {
 			if (target.getType() == EntityType.PLAYER) {
-				((Player)target).setWalkSpeed((float)speed.doubleValue());
-				Bukkit.getServer().getScheduler().runTaskLater(lq, new ReSpeed(target.getUniqueId()), (long)(data.duration/50));			
+//				((Player)target).setWalkSpeed((float)speed.doubleValue());
+//				Bukkit.getServer().getScheduler().runTaskLater(lq, new ReSpeed(target.getUniqueId()), (long)(data.duration/50));
+				target.setMetadata("cursetimeout", new FixedMetadataValue(lq, (time) ));
+				target.setMetadata("speed", new FixedMetadataValue(lq, -1.0D));
+
 			} else {
 				target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,(int)(data.duration/50),(mobspeed-1)));
 			}

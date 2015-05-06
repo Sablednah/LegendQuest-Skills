@@ -16,7 +16,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 	levelRequired = 0, skillPoints = 0, 
 	buildup = 0, delay = 0, duration = 10000, cooldown = 10000, 
 	dblvarnames = { }, dblvarvalues = { }, 
-	intvarnames = { "damage", "distance", "str", "dex", "con", "int", "wis", "chr" }, intvarvalues = { 16,0,0,0,0,0,0 }, 
+	intvarnames = { "damage", "distance", "str", "dex", "con", "int", "wis", "chr", "dodge","hit","soak","power" }, intvarvalues = { 0,16,0,0,0,0,0,0,0,0,0,0 }, 
 	strvarnames = { "message", "effects" }, strvarvalues = { "Cursed: ", "" }
 )
 
@@ -53,14 +53,18 @@ public class Curse extends Skill implements Listener {
 //		System.out.print("Curse time: "+data.duration);
 //		System.out.print("Curse time: "+time);
 
-		target.setMetadata("cursetimeout", new FixedMetadataValue(lq, (time) ));
+		target.setMetadata("cursetimeout", new FixedMetadataValue(lq, (time) ));	
 		target.setMetadata("str", new FixedMetadataValue(lq, (Integer) data.vars.get("str")));
 		target.setMetadata("dex", new FixedMetadataValue(lq, (Integer) data.vars.get("dex")));
 		target.setMetadata("con", new FixedMetadataValue(lq, (Integer) data.vars.get("con")));
 		target.setMetadata("int", new FixedMetadataValue(lq, (Integer) data.vars.get("int")));
 		target.setMetadata("wis", new FixedMetadataValue(lq, (Integer) data.vars.get("wis")));
 		target.setMetadata("chr", new FixedMetadataValue(lq, (Integer) data.vars.get("chr")));
-		
+		target.setMetadata("dodge", new FixedMetadataValue(lq, ((Integer) data.vars.get("dodge"))));
+		target.setMetadata("hit", new FixedMetadataValue(lq, ((Integer) data.vars.get("hit"))));
+		target.setMetadata("soak", new FixedMetadataValue(lq, ((Integer) data.vars.get("soak"))));
+		target.setMetadata("power", new FixedMetadataValue(lq, ((Integer) data.vars.get("power"))));
+	
 		target.damage(damage,p);
 		
 		if (effects != null && !effects.isEmpty()) {

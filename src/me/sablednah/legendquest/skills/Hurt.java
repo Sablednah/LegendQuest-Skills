@@ -7,6 +7,7 @@ import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
 import me.sablednah.legendquest.playercharacters.PC;
 import me.sablednah.legendquest.utils.Utils;
+import me.sablednah.legendquest.utils.plugins.MagicItemsQuarentine;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
 import org.bukkit.Location;
@@ -18,6 +19,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 @SkillManifest(name = "Hurt", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
 description = "Inflict [damage] Damage on target...", 
@@ -89,7 +91,12 @@ public class Hurt extends Skill implements Listener {
 
 		// ok so you have looked at a valid target
 		if (bypassmagicarmour>0) {
-			//get magic armour value andd add to damage to negate.
+			//get magic armour value and add to damage to negate.
+			List<ItemStack> gear = MagicItemsQuarentine.getEquipment(target);
+			if (gear!=null) {
+				int mav = MagicItemsQuarentine.getDefenceMod(gear);
+				damage += mav;
+			}
 		}
 		
 		if (r>0) {

@@ -1,11 +1,13 @@
 package me.sablednah.legendquest.skills;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import me.sablednah.legendquest.effects.EffectProcess;
 import me.sablednah.legendquest.effects.Effects;
 import me.sablednah.legendquest.effects.OwnerType;
 import me.sablednah.legendquest.events.CombatModifiers;
+import me.sablednah.legendquest.utils.plugins.MagicItemsQuarentine;
 import me.sablednah.legendquest.utils.plugins.PluginUtils;
 
 import org.bukkit.Material;
@@ -16,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.ItemStack;
 
 @SkillManifest( 
 name = "Hadouken", type = SkillType.ACTIVE, 
@@ -106,9 +109,15 @@ public class Hadouken extends Skill implements Listener {
 				}
 
 				if ((weapons.contains(p.getItemInHand().getType()))) {
-					if (bypassmagicarmour > 0) {
-						// get magic armour value andd add to damage to negate.
+					if (bypassmagicarmour>0) {
+						//get magic armour value and add to damage to negate.
+						List<ItemStack> gear = MagicItemsQuarentine.getEquipment(target);
+						if (gear!=null) {
+							int mav = MagicItemsQuarentine.getDefenceMod(gear);
+							damage += mav;
+						}
 					}
+
 
 					if (PluginUtils.canBuild(target.getLocation(), p)) {
 						if (explode > 0) {

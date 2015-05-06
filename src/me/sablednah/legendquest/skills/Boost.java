@@ -1,22 +1,21 @@
 package me.sablednah.legendquest.skills;
 
-import java.util.UUID;
-
-import me.sablednah.legendquest.playercharacters.PC;
-
-import org.bukkit.Bukkit;
+import me.sablednah.legendquest.events.SpeedCheckEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 @SkillManifest(
-	name = "Boost", type = SkillType.ACTIVE, author = "SableDnah", version = 1.1D, 
+	name = "Boost", type = SkillType.ACTIVE, author = "SableDnah", version = 2.0D, 
 	description = "Adjust your speed for [duration]s", 
 	consumes = "", manaCost = 5, levelRequired = 0, skillPoints = 0, 
 	buildup = 0, delay = 0, duration = 5000, cooldown = 10000, 
-	dblvarnames = { "speed" }, dblvarvalues = { 0.4 }, 
+	dblvarnames = { "speed" }, dblvarvalues = { 0.2 }, 
 	intvarnames = {	}, intvarvalues = { }, 
-	strvarnames = { }, strvarvalues = { }
+	strvarnames = { "message" }, strvarvalues = { "Boost Activated" }
 )
-public class Boost extends Skill {
+public class Boost extends Skill implements Listener {
 
 	public boolean onEnable() {
 		return true;
@@ -31,29 +30,42 @@ public class Boost extends Skill {
 
 		// load skill options
 		SkillDataStore data = this.getPlayerSkillData(p);
-
-		Double speed = ((Double) data.vars.get("speed"));
+		if (data.type==SkillType.PASSIVE) { // does not require command
+			return CommandResult.NOTAVAILABLE;
+		}
 		
-		p.setWalkSpeed((float)speed.doubleValue());
-		
-		Bukkit.getServer().getScheduler().runTaskLater(lq, new ReSpeed(p.getUniqueId()), (long)(data.duration/50));
-		
-//		boolean test = Mechanics.opposedTest(getPC(p), Difficulty.TOUGH, Attribute.DEX, getPC(target), Difficulty.EASY, Attribute.WIS);
+		String message = ((String) data.vars.get("message"));
+		p.sendMessage(message);
 
 		return CommandResult.SUCCESS;
 	}
+	
+	
+	@EventHandler (priority = EventPriority.NORMAL)
+	public void speedCheck(SpeedCheckEvent event){
 
-	public class ReSpeed implements Runnable {
-		UUID uuid;
-		public ReSpeed(UUID u) {
-			uuid=u;
+		if (!validSkillUser(event.getPC())) {
+			return;
 		}
-		public void run() {
-			PC pc = getPC(uuid);
-			if (pc!=null) {
-				lq.getServer().getPlayer(uuid).setWalkSpeed(pc.getSpeed());
-			}
+
+		Player p = event.getPC().getPlayer();
+		if (p == null) {
+			return;
 		}
+
+		// load skill options
+		SkillDataStore data = this.getPlayerSkillData(event.getPC());
+		SkillPhase phase = data.checkPhase();
+		
+		if (phase.equals(SkillPhase.ACTIVE) || data.type.equals(SkillType.PASSIVE)) {
+			double startspeed = event.getSpeed();
+			Double speed = ((Double) data.vars.get("speed"));
+//System.out.print("Spped mod: " + startspeed);
+			startspeed += speed;
+//System.out.print("Spped mod: " + startspeed);
+			event.setSpeed(startspeed);
+		}		
 	}
+
 }
 
