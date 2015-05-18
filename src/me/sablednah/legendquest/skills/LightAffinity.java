@@ -1,5 +1,10 @@
 package me.sablednah.legendquest.skills;
 
+import java.util.Collection;
+
+import me.sablednah.legendquest.effects.EffectProcess;
+import me.sablednah.legendquest.effects.Effects;
+import me.sablednah.legendquest.effects.OwnerType;
 import me.sablednah.legendquest.events.AbilityCheckEvent;
 import me.sablednah.legendquest.events.SkillTick;
 import me.sablednah.legendquest.events.SpeedCheckEvent;
@@ -11,15 +16,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
 
-@SkillManifest(name = "LightAffinity", type = SkillType.PASSIVE, author = "SableDnah", version = 1.0D, 
-description = "Bonus stats at daytime, damage/penalty in dark", 
-consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
-buildup = 0, delay = 0, duration = 0, cooldown = 0, 
-dblvarnames = { "regenerate", "damage","darkspeed","lightspeed","nightspeed","dayspeed" }, dblvarvalues = { 1.0,1.0,0.0,0.0,0.0,0.0 }, 
-intvarnames = { "minlight", "maxlight", "regeninterval","damageinterval","daybonus","nightpenalty","darkpenalty","lightbonus", "sunonly" }, 
-intvarvalues = { 5, 10, 5, 5, 1, 1, 1, 1, 0}, 
-strvarnames = {  }, strvarvalues = { }
+@SkillManifest(
+	name = "LightAffinity", type = SkillType.PASSIVE, author = "SableDnah", version = 2.0D, 
+	description = "Bonus stats at daytime, damage/penalty in dark", 
+	consumes = "", manaCost = 0, levelRequired = 0, skillPoints = 0, 
+	buildup = 0, delay = 0, duration = 0, cooldown = 0, 
+	dblvarnames = { "regenerate", "damage","darkspeed","lightspeed","nightspeed","dayspeed" }, dblvarvalues = { 1.0,1.0,0.0,0.0,0.0,0.0 }, 
+	intvarnames = { "minlight", "maxlight", "regeninterval","damageinterval","daybonus","nightpenalty","darkpenalty","lightbonus", "sunonly" }, 
+	intvarvalues = { 5, 10, 5, 5, 1, 1, 1, 1, 0}, 
+	strvarnames = { "lighteffects", "nighteffects" }, 
+	strvarvalues = { "", "" }
 )
 
 public class LightAffinity extends Skill implements Listener {
@@ -72,17 +80,87 @@ public class LightAffinity extends Skill implements Listener {
 		double damage = ((Double) data.vars.get("damage"));
 
 		if (!p.isDead()) {
-			if (damage>0.0D) {
-				if (light<minlight) { // dark
+			if (light<minlight) { // dark
+				if (damage>0.0D) {
 					if ((lq.players.ticks % ((damageinterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
 						getPC(p).damage(damage);
 					}
 				}
+				String effects = ((String) data.vars.get("nighteffects"));
+				if (effects != null && !effects.isEmpty()) {
+					String[] list = effects.split("\\s*,\\s*");
+					for (String s : list) {
+						Effects ef = Effects.valueOf(s.toUpperCase());
+						int dur = (damageinterval * 1000);
+						if (dur < 5000) {
+							dur = 5000;
+						}
+						EffectProcess ep = null;
+						ep = new EffectProcess(ef, dur, OwnerType.PLAYER, p.getUniqueId());
+//System.out.print("Duration: " + dur);
+						if (p.hasPotionEffect(ef.getPotioneffectType())) {
+//System.out.print("has: " + ef.getPotioneffectType().toString());
+							boolean isshorter = false;
+							Collection<PotionEffect> pots = p.getActivePotionEffects();
+							for (PotionEffect pe : pots) {
+								if (pe.getType().equals(ef.getPotioneffectType())) {
+									if (pe.getDuration() < lq.configMain.skillTickInterval) {
+										isshorter = true;
+//System.out.print("effect Duration shorter: " + pe.getDuration() + " < " + lq.configMain.skillTickInterval);
+									}
+								}
+							}
+							if (isshorter) {
+								lq.effectManager.removeEffects(OwnerType.PLAYER, p.getUniqueId(), ef);
+								p.removePotionEffect(ef.getPotioneffectType());
+								lq.effectManager.addPendingProcess(ep);
+							}
+						} else {
+//System.out.print("NOT has: " + ef.getPotioneffectType().toString());
+							lq.effectManager.addPendingProcess(ep);
+						}
+					}
+				}
 			}
-			if (regenerate>0.0D) {
-				if (light>maxlight) {
+			if (light>maxlight) {
+				if (regenerate>0.0D) {
 					if ((lq.players.ticks % ((regeninterval*20)/lq.configMain.skillTickInterval)) == 0 ) {
 						getPC(p).heal(regenerate);
+					}
+				}
+				String effects = ((String) data.vars.get("lighteffects"));
+				if (effects != null && !effects.isEmpty()) {
+					String[] list = effects.split("\\s*,\\s*");
+					for (String s : list) {
+						Effects ef = Effects.valueOf(s.toUpperCase());
+						int dur = (damageinterval * 1000);
+						if (dur < 5000) {
+							dur = 5000;
+						}
+						EffectProcess ep = null;
+						ep = new EffectProcess(ef, dur, OwnerType.PLAYER, p.getUniqueId());
+//System.out.print("Duration: " + dur);
+						if (p.hasPotionEffect(ef.getPotioneffectType())) {
+//System.out.print("has: " + ef.getPotioneffectType().toString());
+							boolean isshorter = false;
+							Collection<PotionEffect> pots = p.getActivePotionEffects();
+							for (PotionEffect pe : pots) {
+								if (pe.getType().equals(ef.getPotioneffectType())) {
+									if (pe.getDuration() < lq.configMain.skillTickInterval) {
+										isshorter = true;
+//System.out.print("effect Duration shorter: " + pe.getDuration() + " < " + lq.configMain.skillTickInterval);
+									}
+								}
+							}
+							if (isshorter) {
+								lq.effectManager.removeEffects(OwnerType.PLAYER, p.getUniqueId(), ef);
+								p.removePotionEffect(ef.getPotioneffectType());
+								lq.effectManager.addPendingProcess(ep);
+							}
+						} else {
+//System.out.print("NOT has: " + ef.getPotioneffectType().toString());
+							lq.effectManager.addPendingProcess(ep);
+						}
 					}
 				}
 			}

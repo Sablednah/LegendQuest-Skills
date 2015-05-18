@@ -17,7 +17,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 	consumes = "", manaCost = 10, 
 	levelRequired = 0, skillPoints = 0, 
 	buildup = 0, delay = 0, duration = 10000, cooldown = 10000, 
-	dblvarnames = { "speed" }, dblvarvalues = { 0.5 }, 
+	dblvarnames = { "speed" }, dblvarvalues = { 0.1 }, 
 	intvarnames = { "heal", "str", "dex", "con", "int", "wis", "chr", "dodge","hit","soak","power" }, intvarvalues = { 10,0,0,0,0,0,0,0,0,0,0 }, 
 	strvarnames = { "message", "effects" }, strvarvalues = { "You have been buffed", "" }
 )
