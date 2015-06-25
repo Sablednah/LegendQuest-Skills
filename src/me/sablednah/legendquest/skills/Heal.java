@@ -40,8 +40,12 @@ public class Heal extends Skill{
 		// Get target
 		LivingEntity target = Utils.getTarget(p, distance);
 		if (target == null) {
-			p.sendMessage("Sorry, you need to look at a target...");
-			return CommandResult.FAIL;
+			Player player = (Player) sender;
+			double h = player.getHealth();
+			h = h + heal;
+			if (h > player.getMaxHealth()) { h = player.getMaxHealth(); }
+			player.setHealth(h);
+			return CommandResult.SUCCESS;
 		}
 
 //		if (!PluginUtils.canBuild(target.getLocation(), p)) {
